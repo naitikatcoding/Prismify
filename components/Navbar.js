@@ -9,82 +9,45 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <nav className="relative z-50 flex items-center w-[90%] max-w-5xl mx-auto border border-slate-700 px-6 py-3 rounded-full text-black text-sm mt-2.5 bg-amber-100">
-      
-      {/* Left Section / Logo */}
-      <div className="flex items-center min-w-[120px] h-10 gap-1.5">
-        <Image 
-                width={50}
-                height={50}
-                src={logo} 
-                alt="Robot animation" 
-                unoptimized 
-              />
-        <span className="text-2xl text-black font-bold inclusivesans">Prismify</span>
-      </div>
+    <nav className="relative z-50 mx-auto mt-4 flex w-[calc(100%-2rem)] max-w-7xl items-center rounded-full border border-[#34433b] bg-[#131c19]/90 px-4 py-2.5 text-sm text-[#f5f1e8] shadow-lg shadow-black/10 backdrop-blur-md sm:w-[calc(100%-3rem)] sm:px-5">
+      <a href="#top" className="flex items-center gap-2.5" aria-label="Prismify home">
+        <Image
+          width={36}
+          height={36}
+          src={logo}
+          alt=""
+          unoptimized
+          className="rounded-lg"
+        />
+        <span className="inclusivesans text-xl font-bold tracking-tight text-[#f5f1e8]">Prismify</span>
+      </a>
 
-      {/* Desktop Navigation */}
-      <div className="hidden md:flex items-center gap-6 ml-auto">
-        <a href="#" className="relative overflow-hidden h-6 group">
-          <span className="block group-hover:-translate-y-full transition-transform duration-300">
-            Products
-          </span>
-
-          <span className="block absolute top-full left-0 group-hover:-translate-y-full transition-transform duration-300">
-            Products
-          </span>
+      <div className="ml-auto hidden items-center gap-8 md:flex">
+        <a href="#studio" className="group relative h-5 overflow-hidden text-[#aeb9b0] transition hover:text-[#c5f56b]">
+          <span className="block whitespace-nowrap transition-transform duration-300 group-hover:-translate-y-full">Studio</span>
+          <span className="absolute left-0 top-full block whitespace-nowrap transition-transform duration-300 group-hover:-translate-y-full">Studio</span>
         </a>
-
-        <a href="#" className="relative overflow-hidden h-6 group">
-          <span className="block group-hover:-translate-y-full transition-transform duration-300">
-            Stories
-          </span>
-
-          <span className="block absolute top-full left-0 group-hover:-translate-y-full transition-transform duration-300">
-            Stories
-          </span>
+        <a href="#how-it-works" className="group relative h-5 overflow-hidden text-[#aeb9b0] transition hover:text-[#c5f56b]">
+          <span className="block whitespace-nowrap transition-transform duration-300 group-hover:-translate-y-full">How it works</span>
+          <span className="absolute left-0 top-full block whitespace-nowrap transition-transform duration-300 group-hover:-translate-y-full">How it works</span>
         </a>
-
-        <a href="#" className="relative overflow-hidden h-6 group">
-          <span className="block group-hover:-translate-y-full transition-transform duration-300">
-            Pricing
-          </span>
-
-          <span className="block absolute top-full left-0 group-hover:-translate-y-full transition-transform duration-300">
-            Pricing
-          </span>
+        <a href="#how-it-works" className="group relative h-5 overflow-hidden text-[#aeb9b0] transition hover:text-[#c5f56b]">
+          <span className="block whitespace-nowrap transition-transform duration-300 group-hover:-translate-y-full">About</span>
+          <span className="absolute left-0 top-full block whitespace-nowrap transition-transform duration-300 group-hover:-translate-y-full">About</span>
         </a>
-
-        <a href="#" className="relative overflow-hidden h-6 group">
-          <span className="block group-hover:-translate-y-full transition-transform duration-300">
-            Docs
-          </span>
-
-          <span className="block absolute top-full left-0 group-hover:-translate-y-full transition-transform duration-300">
-            Docs
-          </span>
+        <a href="#studio" className="flex h-10 items-center rounded-full bg-[#c5f56b] px-4 font-bold text-[#101514] transition hover:bg-white">
+          Get started <span aria-hidden="true">-&gt;</span>
         </a>
       </div>
 
-      {/* Desktop Buttons */}
-      <div className="hidden md:flex items-center gap-4 ml-8">
-        <button className="border border-slate-600 hover:bg-slate-800 hover:text-white px-4 py-2 rounded-full text-sm font-medium transition">
-          Contact
-        </button>
-
-        <button className="bg-black text-white hover:bg-slate-800 px-4 py-2 rounded-full text-sm font-medium transition duration-300">
-          Get Started
-        </button>
-      </div>
-
-      {/* Mobile Menu Button */}
       <button
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        className="md:hidden ml-auto text-gray-600"
-        aria-label="Toggle menu"
+        className="ml-auto rounded-full border border-[#405047] p-2 text-[#aeb9b0] transition hover:border-[#c5f56b] hover:text-[#c5f56b] md:hidden"
+        aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+        aria-expanded={mobileMenuOpen}
       >
         <svg
-          className="w-6 h-6"
+          className="h-5 w-5"
           fill="none"
           stroke="currentColor"
           strokeWidth="2"
@@ -92,55 +55,19 @@ const Navbar = () => {
           strokeLinecap="round"
           strokeLinejoin="round"
         >
-          <path d="M4 6h16M4 12h16M4 18h16" />
+          {mobileMenuOpen ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
         </svg>
       </button>
 
-      {/* Mobile Menu */}
       <div
-        className={`absolute top-full mt-3 left-0 bg-black w-full text-base flex-col items-center gap-4 py-6 rounded-2xl ${
+        className={`absolute left-0 top-full mt-3 w-full flex-col gap-1 rounded-2xl border border-[#34433b] bg-[#131c19] p-3 text-base shadow-2xl shadow-black/30 ${
           mobileMenuOpen ? "flex" : "hidden"
         }`}
       >
-        <a
-          className="text-white hover:text-indigo-600"
-          href="#"
-          onClick={() => setMobileMenuOpen(false)}
-        >
-          Products
-        </a>
-
-        <a
-          className="text-white hover:text-indigo-600"
-          href="#"
-          onClick={() => setMobileMenuOpen(false)}
-        >
-          Customer Stories
-        </a>
-
-        <a
-          className="text-white hover:text-indigo-600"
-          href="#"
-          onClick={() => setMobileMenuOpen(false)}
-        >
-          Pricing
-        </a>
-
-        <a
-          className="text-white hover:text-indigo-600"
-          href="#"
-          onClick={() => setMobileMenuOpen(false)}
-        >
-          Docs
-        </a>
-
-        <button className="border border-slate-600 text-white hover:bg-slate-800 px-4 py-2 rounded-full text-sm font-medium transition">
-          Contact
-        </button>
-
-        <button className="bg-[#A0F1BD] text-black px-4 py-2 rounded-full text-sm font-medium hover:bg-slate-100 transition duration-300">
-          Get Started
-        </button>
+        <a className="rounded-xl px-4 py-3 text-[#aeb9b0] hover:bg-[#1d2a24] hover:text-[#c5f56b]" href="#studio" onClick={() => setMobileMenuOpen(false)}>Studio</a>
+        <a className="rounded-xl px-4 py-3 text-[#aeb9b0] hover:bg-[#1d2a24] hover:text-[#c5f56b]" href="#how-it-works" onClick={() => setMobileMenuOpen(false)}>How it works</a>
+        <a className="rounded-xl px-4 py-3 text-[#aeb9b0] hover:bg-[#1d2a24] hover:text-[#c5f56b]" href="#how-it-works" onClick={() => setMobileMenuOpen(false)}>About</a>
+        <a className="mt-2 rounded-xl bg-[#c5f56b] px-4 py-3 text-center font-bold text-[#101514]" href="#studio" onClick={() => setMobileMenuOpen(false)}>Get started -&gt;</a>
       </div>
     </nav>
   );
