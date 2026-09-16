@@ -9,7 +9,7 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <nav className="relative z-50 mx-auto mt-4 flex w-[calc(100%-2rem)] max-w-7xl items-center rounded-full border border-[#34433b] bg-[#131c19]/90 px-4 py-2.5 text-sm text-[#f5f1e8] shadow-lg shadow-black/10 backdrop-blur-md sm:w-[calc(100%-3rem)] sm:px-5">
+    <nav className="relative z-50 mx-auto mt-4 flex w-[calc(50%-1rem)] max-w-5xl items-center rounded-full border border-[#34433b] bg-[#131c19]/90 px-4 py-2.5 text-sm text-[#f5f1e8] shadow-lg shadow-black/10 backdrop-blur-md sm:w-[calc(100%-2rem)] sm:px-5">
       <a href="#top" className="flex items-center gap-2.5" aria-label="Prismify home">
         <Image
           width={36}
@@ -19,7 +19,7 @@ const Navbar = () => {
           unoptimized
           className="rounded-lg"
         />
-        <span className="inclusivesans text-xl font-bold tracking-tight text-[#f5f1e8]">Prismify</span>
+        <span className="font-sans text-xl font-bold tracking-[-0.04em] text-[#f5f1e8]">Prismify</span>
       </a>
 
       <div className="ml-auto hidden items-center gap-8 md:flex">
