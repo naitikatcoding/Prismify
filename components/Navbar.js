@@ -10,16 +10,16 @@ const Navbar = () => {
 
   return (
     <nav className="relative z-50 mx-auto mt-4 flex w-[calc(50%-1rem)] max-w-5xl items-center rounded-full border border-[#34433b] bg-[#131c19]/90 px-4 py-2.5 text-sm text-[#f5f1e8] shadow-lg shadow-black/10 backdrop-blur-md sm:w-[calc(100%-2rem)] sm:px-5">
-      <a href="#top" className="flex items-center gap-2.5" aria-label="Prismify home">
+      <a href="#top" className="group flex items-center gap-3" aria-label="Prismify home">
         <Image
-          width={36}
-          height={36}
+          width={40}
+          height={40}
           src={logo}
           alt=""
           unoptimized
-          className="rounded-lg"
+          className="rounded-xl shadow-md shadow-[#c5f56b]/10 ring-1 ring-white/15 transition-transform duration-300 group-hover:rotate-[-4deg] group-hover:scale-105"
         />
-        <span className="font-sans text-xl font-bold tracking-[-0.04em] text-[#f5f1e8]">Prismify</span>
+        <span className="inline-block bg-gradient-to-r from-[#f5f1e8] via-[#d9ffe6] to-[#c5f56b] bg-clip-text pb-0.5 font-sans text-3xl font-black leading-[1.2] tracking-[-0.05em] text-transparent">Prismify</span>
       </a>
 
       <div className="ml-auto hidden items-center gap-8 md:flex">
@@ -36,7 +36,7 @@ const Navbar = () => {
           <span className="absolute left-0 top-full block whitespace-nowrap transition-transform duration-300 group-hover:-translate-y-full">About</span>
         </a>
         <a href="#studio" className="flex h-10 items-center rounded-full bg-[#c5f56b] px-4 font-bold text-[#101514] transition hover:bg-white">
-          Get started <span aria-hidden="true">-&gt;</span>
+          Get started 
         </a>
       </div>
 

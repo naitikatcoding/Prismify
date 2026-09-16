@@ -1,4 +1,64 @@
+'use client';
+
+import { useState } from "react";
+
+const rawIdea =
+  "Building in public taught me that consistency beats perfect timing. Here's what changed when I started sharing the process...";
+
+const platforms = {
+  LinkedIn: {
+    label: "LinkedIn",
+    format: "Professional post",
+    words: "146 words",
+    output: {
+      Professional:
+        "The most useful creative habit isn't inspiration. It's showing up before you feel ready. When I began sharing my work, I thought every post needed a perfect conclusion. Then I learned that progress is the story.",
+      Conversational:
+        "I used to wait for the perfect moment to share what I was building. Turns out, the real shift came from simply showing up and letting people see the process. Consistency beats perfect timing every time.",
+      Bold:
+        "Perfect timing is a myth. Consistency is the advantage. Sharing the work before it felt finished changed how I built, learned, and connected with people.",
+    },
+  },
+  "X thread": {
+    label: "X thread",
+    format: "5-post thread",
+    words: "5 posts",
+    output: {
+      Professional:
+        "A short thread on building in public:\n\n1/ Consistency compounds faster than perfect timing.\n\n2/ Sharing the process creates feedback before the work is finished.\n\n3/ The lesson: publish the progress, not just the polished result.",
+      Conversational:
+        "I kept waiting for the “right time” to share my work.\n\nThen I started posting the messy middle.\n\nThat’s when things got interesting: more feedback, more momentum, less pressure to be perfect.",
+      Bold:
+        "Stop waiting for perfect timing.\n\nThe people who share the process learn faster, build trust sooner, and create their own momentum.\n\nProgress is the product.",
+    },
+  },
+  Newsletter: {
+    label: "Newsletter",
+    format: "Weekly letter",
+    words: "312 words",
+    output: {
+      Professional:
+        "This week’s lesson is simple: consistency creates the conditions for better work. Once I began sharing the process, each update became a useful checkpoint instead of a final performance.",
+      Conversational:
+        "Here’s something I wish I had learned sooner: you don’t need a perfect update. You just need an honest one. Sharing the process made the work feel lighter and the next step much clearer.",
+      Bold:
+        "The polished version is not the most valuable version. The process is. The moment I stopped hiding unfinished work, I started building with more speed, clarity, and conviction.",
+    },
+  },
+};
+
+const tones = {
+  Professional: "Clear, credible, and structured for expertise.",
+  Conversational: "Warm, human, and easy to read aloud.",
+  Bold: "Direct, energetic, and built to stop the scroll.",
+};
+
 export default function Home() {
+  const [activePlatform, setActivePlatform] = useState("LinkedIn");
+  const [activeTone, setActiveTone] = useState("Professional");
+  const [generated, setGenerated] = useState(true);
+  const platform = platforms[activePlatform];
+
   return (
     <div id="top" className="prism-page min-h-screen overflow-hidden bg-[#101514] text-[#f5f1e8]">
       <div className="prism-grid" aria-hidden="true" />
@@ -23,9 +83,7 @@ export default function Home() {
                 className="inline-flex items-center justify-center gap-3 rounded-full bg-[#c5f56b] px-6 py-3.5 text-sm font-bold text-[#101514] transition hover:bg-white"
               >
                 Start creating
-                <span aria-hidden="true" className="text-lg leading-none">
-                  -&gt;
-                </span>
+                
               </a>
               <a
                 href="#how-it-works"
@@ -69,51 +127,78 @@ export default function Home() {
                     </span>
                     <span className="text-xs text-[#718078]">2,048 chars</span>
                   </div>
-                  <p className="text-sm leading-6 text-[#d3dbd2]">
-                    Building in public taught me that consistency beats perfect
-                    timing. Here&apos;s what changed when I started sharing the
-                    process...
-                  </p>
+                  <p className="text-sm leading-6 text-[#d3dbd2]">{rawIdea}</p>
                   <div className="mt-6 flex flex-wrap gap-2">
-                    <span className="rounded-md bg-[#293a30] px-2.5 py-1.5 text-xs text-[#c5f56b]">
-                      Professional
-                    </span>
-                    <span className="rounded-md border border-[#46544c] px-2.5 py-1.5 text-xs text-[#aeb9b0]">
-                      Add a tone +
-                    </span>
+                    {Object.keys(tones).map((tone) => (
+                      <button
+                        key={tone}
+                        type="button"
+                        onClick={() => {
+                          setActiveTone(tone);
+                          setGenerated(false);
+                        }}
+                        className={`rounded-md px-2.5 py-1.5 text-xs transition ${
+                          activeTone === tone
+                            ? "bg-[#293a30] text-[#c5f56b]"
+                            : "border border-[#46544c] text-[#aeb9b0] hover:border-[#c5f56b] hover:text-[#c5f56b]"
+                        }`}
+                        aria-pressed={activeTone === tone}
+                      >
+                        {tone}
+                      </button>
+                    ))}
                   </div>
-                  <button className="mt-7 w-full rounded-lg bg-[#c5f56b] px-4 py-3 text-sm font-bold text-[#101514] transition hover:bg-white">
+                  <p className="mt-4 text-xs leading-5 text-[#718078]">
+                    {tones[activeTone]}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setGenerated(true)}
+                    className="mt-5 w-full rounded-lg bg-[#c5f56b] px-4 py-3 text-sm font-bold text-[#101514] transition hover:bg-white"
+                  >
                     Generate content
                   </button>
                 </div>
 
                 <div className="rounded-xl border border-[#34423b] bg-[#f5f1e8] p-4 text-[#17211d]">
-                  <div className="mb-5 flex items-center justify-between">
-                    <div className="flex gap-4 text-xs font-bold">
-                      <span className="border-b-2 border-[#17211d] pb-2">
-                        LinkedIn
-                      </span>
-                      <span className="text-[#859089]">X thread</span>
-                      <span className="hidden text-[#859089] sm:inline">
-                        Newsletter
-                      </span>
+                  <div className="mb-5 flex items-start justify-between gap-3">
+                    <div className="flex flex-wrap gap-x-4 gap-y-2 text-xs font-bold">
+                      {Object.keys(platforms).map((name) => (
+                        <button
+                          key={name}
+                          type="button"
+                          onClick={() => {
+                            setActivePlatform(name);
+                            setGenerated(false);
+                          }}
+                          className={`border-b-2 pb-2 transition ${
+                            activePlatform === name
+                              ? "border-[#17211d] text-[#17211d]"
+                              : "border-transparent text-[#859089] hover:text-[#17211d]"
+                          }`}
+                          aria-pressed={activePlatform === name}
+                        >
+                          {platforms[name].label}
+                        </button>
+                      ))}
                     </div>
-                    <span className="text-xs text-[#859089]">Copy</span>
+                    <button
+                      type="button"
+                      className="shrink-0 text-xs text-[#859089] transition hover:text-[#17211d]"
+                    >
+                      Copy
+                    </button>
                   </div>
-                  <p className="text-sm font-semibold leading-6">
-                    The most useful creative habit isn&apos;t inspiration.
-                    It&apos;s showing up before you feel ready.
-                  </p>
-                  <p className="mt-4 text-sm leading-6 text-[#52605a]">
-                    When I began sharing my work, I thought every post needed a
-                    perfect conclusion. Then I learned that progress is the
-                    story...
-                  </p>
+                  <div className="mb-4 flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.14em] text-[#859089]">
+                    <span>{platform.format}</span>
+                    <span className="text-[#52605a]">{activeTone}</span>
+                  </div>
+                  <div className={`whitespace-pre-line text-sm leading-6 ${generated ? "text-[#17211d]" : "text-[#52605a]"}`}>
+                    {platform.output[activeTone]}
+                  </div>
                   <div className="mt-7 flex items-center justify-between border-t border-[#d5d1c8] pt-4 text-xs text-[#859089]">
-                    <span>Ready to publish</span>
-                    <span className="font-semibold text-[#52605a]">
-                      146 words
-                    </span>
+                    <span>{generated ? "Ready to publish" : "Preview updated"}</span>
+                    <span className="font-semibold text-[#52605a]">{platform.words}</span>
                   </div>
                 </div>
               </div>
