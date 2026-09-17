@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 const rawIdea =
@@ -93,12 +94,12 @@ export default function Home() {
             </p>
 
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <a
-                href="#studio"
+              <Link
+                href="/workspace"
                 className="inline-flex items-center justify-center rounded-full bg-[#c5f56b] px-6 py-3.5 text-sm font-bold text-[#101514] transition hover:bg-white"
               >
                 Start creating
-              </a>
+              </Link>
 
               <a
                 href="#how-it-works"
@@ -146,7 +147,7 @@ export default function Home() {
                     </span>
                   </div>
 
-                  <p className="break-words text-sm leading-6 text-[#d3dbd2]">
+                  <p className="wrap-break-word text-sm leading-6 text-[#d3dbd2]">
                     {rawIdea}
                   </p>
 
@@ -224,7 +225,7 @@ export default function Home() {
                   </div>
 
                   <div
-                    className={`max-h-64 overflow-y-auto break-words whitespace-pre-line pr-2 text-sm leading-6 [overflow-wrap:anywhere] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${
+                    className={`max-h-64 overflow-y-auto wrap-anywhere whitespace-pre-line pr-2 text-sm leading-6 scrollbar-none [&::-webkit-scrollbar]:hidden ${
                       generated ? "text-[#17211d]" : "text-[#52605a]"
                     }`}
                   >
@@ -279,6 +280,27 @@ export default function Home() {
               review and share.
             </p>
           </div>
+        </section>
+
+        <section
+          aria-label="How it works demonstrations"
+          className="grid gap-5 sm:grid-cols-3"
+        >
+          <div
+            role="img"
+            aria-label="Placeholder for a demonstration GIF"
+            className="aspect-square w-full rounded-2xl border border-[#405047] bg-[#18211e]"
+          />
+          <div
+            role="img"
+            aria-label="Placeholder for a demonstration GIF"
+            className="aspect-square w-full rounded-2xl border border-[#405047] bg-[#18211e]"
+          />
+          <div
+            role="img"
+            aria-label="Placeholder for a demonstration GIF"
+            className="aspect-square w-full rounded-2xl border border-[#405047] bg-[#18211e]"
+          />
         </section>
       </main>
     </div>
