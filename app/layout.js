@@ -25,7 +25,6 @@ export default function RootLayout({ children }) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full">
-
         {/* Navbar overlays the main page */}
         <div className="absolute top-0 left-0 w-full z-50">
           <Navbar />
@@ -35,7 +34,6 @@ export default function RootLayout({ children }) {
         <main className="relative z-0 min-h-screen">
           {children}
         </main>
-
       </body>
     </html>
   );

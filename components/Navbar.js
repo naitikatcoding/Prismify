@@ -36,7 +36,7 @@ const Navbar = () => {
           <span className="block whitespace-nowrap transition-transform duration-300 group-hover:-translate-y-full">About</span>
           <span className="absolute left-0 top-full block whitespace-nowrap transition-transform duration-300 group-hover:-translate-y-full">About</span>
         </Link>
-        <Link href="/workspace" className="flex h-10 items-center rounded-full bg-[#c5f56b] px-4 font-bold text-[#101514] transition hover:bg-white">
+        <Link href="/login" className="flex h-10 items-center rounded-full bg-[#c5f56b] px-4 font-bold text-[#101514] transition hover:bg-white">
           Get started 
         </Link>
       </div>
