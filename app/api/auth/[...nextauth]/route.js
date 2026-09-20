@@ -1,8 +1,6 @@
 import NextAuth from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
-import User from "@/models/User";
-import connectDb from "@/db/connectDb";
 
 export const authOptions = {
   providers: [
@@ -78,61 +76,17 @@ export const authOptions = {
         const normalizedEmail = email.toLowerCase().trim();
         user.email = normalizedEmail;
 
-        // 2. Connect to MongoDB
-        await connectDb();
+        const username = (
+          profile?.login ||
+          user.name ||
+          normalizedEmail.split("@")[0] ||
+          "user"
+        )
+          .toLowerCase()
+          .replace(/[^a-z0-9_-]/g, "") || "user";
 
-        // 3. Find or create user
-        let currentUser = await User.findOne({ email: normalizedEmail });
-
-        if (!currentUser) {
-          // Generate a clean, URL-safe base username
-          let baseUsername = (
-            profile?.login ||
-            (user.name ? user.name.replace(/\s+/g, "").toLowerCase() : "") ||
-            normalizedEmail.split("@")[0] ||
-            "user"
-          )
-            .toLowerCase()
-            .replace(/[^a-z0-9_-]/g, "");
-
-          if (!baseUsername) baseUsername = "user";
-
-          // Ensure unique username to avoid duplicate key errors
-          let username = baseUsername;
-          let existingWithUsername = await User.findOne({ username });
-          while (existingWithUsername) {
-            username = `${baseUsername}${Math.floor(1000 + Math.random() * 9000)}`;
-            existingWithUsername = await User.findOne({ username });
-          }
-
-          const profilePic =
-            user.image ||
-            profile?.picture ||
-            profile?.avatar_url ||
-            "";
-
-          const displayName =
-            user.name ||
-            profile?.name ||
-            profile?.login ||
-            username;
-
-          currentUser = await User.create({
-            email: normalizedEmail,
-            name: displayName,
-            username: username,
-            profilePic: profilePic,
-          });
-
-          console.log(`[NextAuth] Created new user: ${currentUser.username} (${currentUser.email})`);
-        } else {
-          console.log(`[NextAuth] Found existing user: ${currentUser.username} (${currentUser.email})`);
-        }
-
-        // Attach DB details to the in-memory user object for the jwt callback
-        user.id = currentUser._id.toString();
-        user.username = currentUser.username;
-        user.name = currentUser.username;
+        user.username = username;
+        user.name = username;
 
         return true;
       } catch (error) {
@@ -159,23 +113,6 @@ export const authOptions = {
         token.username = user.username;
         if (user.username) {
           token.name = user.username;
-        }
-      }
-
-      // If token missing username (e.g. existing session / token refresh), look up from DB
-      if (!token.username && token.email) {
-        try {
-          await connectDb();
-          const dbUser = await User.findOne({ email: token.email.toLowerCase().trim() }).select(
-            "_id username name"
-          );
-          if (dbUser) {
-            token.id = dbUser._id.toString();
-            token.username = dbUser.username;
-            token.name = dbUser.username;
-          }
-        } catch (err) {
-          console.error("[NextAuth] Error querying user in JWT callback:", err);
         }
       }
 
