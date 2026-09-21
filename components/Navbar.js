@@ -12,6 +12,7 @@ const Navbar = () => {
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const [session, setSession] = useState(null);
   const isSignedIn = Boolean(session);
+  const studioHref = isSignedIn ? "/workspace" : "/login";
   const avatarLabel = session?.user?.name || session?.user?.email || "Account";
   const avatarInitial = avatarLabel.charAt(0).toUpperCase();
 
@@ -34,7 +35,7 @@ const Navbar = () => {
       </Link>
 
       <div className="ml-auto hidden items-center gap-8 md:flex">
-        <Link href="/workspace" className="group relative h-5 overflow-hidden text-[#aeb9b0] transition hover:text-[#c5f56b]">
+        <Link href={studioHref} className="group relative h-5 overflow-hidden text-[#aeb9b0] transition hover:text-[#c5f56b]">
           <span className="block whitespace-nowrap transition-transform duration-300 group-hover:-translate-y-full">Studio</span>
           <span className="absolute left-0 top-full block whitespace-nowrap transition-transform duration-300 group-hover:-translate-y-full">Studio</span>
         </Link>
@@ -116,7 +117,7 @@ const Navbar = () => {
           mobileMenuOpen ? "flex" : "hidden"
         }`}
       >
-        <Link className="rounded-xl px-4 py-3 text-[#aeb9b0] hover:bg-[#1d2a24] hover:text-[#c5f56b]" href="/workspace" onClick={() => setMobileMenuOpen(false)}>Studio</Link>
+        <Link className="rounded-xl px-4 py-3 text-[#aeb9b0] hover:bg-[#1d2a24] hover:text-[#c5f56b]" href={studioHref} onClick={() => setMobileMenuOpen(false)}>Studio</Link>
         <Link className="rounded-xl px-4 py-3 text-[#aeb9b0] hover:bg-[#1d2a24] hover:text-[#c5f56b]" href="/#how-it-works" onClick={() => setMobileMenuOpen(false)}>How it works</Link>
         <Link className="rounded-xl px-4 py-3 text-[#aeb9b0] hover:bg-[#1d2a24] hover:text-[#c5f56b]" href="/#how-it-works" onClick={() => setMobileMenuOpen(false)}>About</Link>
         {isSignedIn ? (
