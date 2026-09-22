@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { getSession } from "next-auth/react";
 import { Loader2, Copy, Check, ChevronDown, User } from "lucide-react";
 
 const TONES = ["Professional", "Viral/Hype", "Deep/Thoughtful", "Casual/Witty"];
@@ -55,12 +57,39 @@ The Prismify Team`,
 });
 
 export default function WorkspacePage() {
+  const router = useRouter();
   const [rawInput, setRawInput] = useState("");
   const [selectedTone, setSelectedTone] = useState(TONES[0]);
   const [activeTab, setActiveTab] = useState("twitter");
   const [isLoading, setIsLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [generatedData, setGeneratedData] = useState(null);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    getSession().then((session) => {
+      if (isMounted) {
+        setAuthChecked(true);
+        if (!session) {
+          router.replace("/login");
+        }
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [router]);
+
+  if (!authChecked) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[#101514] px-5 text-sm text-[#aeb9b0]">
+        Checking your session...
+      </main>
+    );
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();

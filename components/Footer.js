@@ -1,8 +1,21 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { getSession } from "next-auth/react";
 import logo from "../public/logo.svg";
 
 const Footer = () => {
+  const [session, setSession] = useState(null);
+
+  useEffect(() => {
+    getSession().then(setSession);
+  }, []);
+
+  const studioHref = session ? "/workspace" : "/login";
+  const studioLabel = session ? "Open Studio" : "Sign in to Studio";
+
   return (
     <footer className="border-t border-[#2d3934] bg-[#101514] text-[#f5f1e8]">
       <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-12 lg:py-20">
@@ -31,11 +44,11 @@ const Footer = () => {
           </div>
 
           <Link
-            href="/login"
-            className="inline-flex w-fit items-center gap-3 rounded-full bg-[#c5f56b] px-5 py-3.5 text-sm font-bold text-[#101514] transition hover:bg-white"
+            href={studioHref}
+            className="group inline-flex w-fit items-center gap-3 rounded-full bg-[#c5f56b] px-5 py-3.5 text-sm font-bold text-[#101514] transition hover:bg-white"
           >
-            Start creating
-            <span aria-hidden="true" className="text-lg leading-none">
+            {session ? "Open your studio" : "Start creating"}
+            <span aria-hidden="true" className="text-lg leading-none transition-transform group-hover:translate-x-1">
               -&gt;
             </span>
           </Link>
@@ -43,6 +56,9 @@ const Footer = () => {
 
         <div className="grid gap-10 py-12 sm:grid-cols-3 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-[#c5f56b]">
+              The Prismify principle
+            </p>
             <p className="max-w-[14rem] text-sm leading-6 text-[#718078]">
               One idea. More ways to share it. Less time staring at a blank
               page.
@@ -60,8 +76,8 @@ const Footer = () => {
               <Link className="transition hover:text-[#c5f56b]" href="/#how-it-works">
                 How it works
               </Link>
-              <Link className="transition hover:text-[#c5f56b]" href="/workspace">
-                Studio
+              <Link className="transition hover:text-[#c5f56b]" href={studioHref}>
+                {studioLabel}
               </Link>
             </nav>
           </div>
@@ -71,8 +87,8 @@ const Footer = () => {
               Create
             </p>
             <nav className="mt-4 flex flex-col items-start gap-3 text-sm text-[#aeb9b0]">
-              <Link className="transition hover:text-[#c5f56b]" href="/login">
-                Get started
+              <Link className="transition hover:text-[#c5f56b]" href={studioHref}>
+                {session ? "Open workspace" : "Get started"}
               </Link>
               <a className="transition hover:text-[#c5f56b]" href="mailto:hello@prismify.app">
                 Contact us
