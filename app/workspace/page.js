@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSession } from "next-auth/react";
-import { Loader2, Copy, Check, ChevronDown, User } from "lucide-react";
+import { Loader2, Copy, Check, ChevronDown } from "lucide-react";
 
 const TONES = ["Professional", "Viral/Hype", "Deep/Thoughtful", "Casual/Witty"];
 
@@ -16,44 +15,45 @@ const TABS = [
 
 const buildMockData = (input, tone) => ({
   twitterThread: [
-    `1/ Most creators write once and publish once. That's leaving 80% of your reach on the table. Here's how to turn one idea into a full content spectrum (${tone} mode) 🧵`,
-    `2/ Start with a single core idea: "${input.slice(0, 80).trim()}${input.length > 80 ? "..." : ""}". Strip it to one clear takeaway, then reshape it for each platform instead of copy-pasting.`,
-    `3/ Threads for reach, LinkedIn for authority, newsletters for depth. Same idea, three formats, zero burnout. Follow for more systems like this. ✨`,
+    `1/ Most creators publish once and hope for traction. The smarter move is to turn one idea into a content system (${tone} style) 🧵`,
+    `2/ Start with a single core insight: "${input.slice(0, 80).trim()}${input.length > 80 ? "..." : ""}". Strip the noise, keep the point, and reshape it for every channel.`,
+    `3/ One idea, three formats, more reach. Threads drive discovery, LinkedIn builds authority, and newsletters deepen trust. That's the leverage.`,
   ],
-  linkedinPost: `I used to spend hours rewriting the same idea for every platform.
+  linkedinPost: `Most people repurpose content by copying the same post across channels.
 
-Then I changed one thing: I started with a single core insight and reshaped it for each audience.
+That works for speed, but not for impact.
 
-Here's the framework:
+The better play is simple: start with one strong insight, then adapt the structure to the platform.
 
-→ Define the one takeaway
-→ Match the format to the platform
-→ Keep the voice consistent (${tone})
+For Twitter, you aim for momentum.
+For LinkedIn, you aim for authority.
+For newsletters, you aim for depth.
 
-The result? One idea, three high-performing posts, and my weekends back.
+The result is not just more content — it's better content that feels native to each audience.
 
-What's your best content repurposing tip?
+A strong content system beats a louder content schedule.
 
-#ContentStrategy #CreatorEconomy #Productivity`,
-  newsletter: `Subject: One idea, three formats
+#ContentStrategy #CreatorEconomy #BrandBuilding`,
+  newsletter: `Subject: Turn one idea into three formats
 
 Hey there,
 
-This week I want to share a simple system that changed how I create content.
+This week’s idea is simple: stop treating every platform as a separate content job.
 
-THE CORE IDEA
+The core message
 ${input.slice(0, 160).trim()}${input.length > 160 ? "..." : ""}
 
-THE 3-STEP FRAMEWORK
-1. Distill: find the one takeaway worth sharing.
-2. Reshape: adapt the format to each platform.
-3. Publish: schedule everything in a single sitting.
+The framework
+1. Distill the takeaway.
+2. Adapt the structure to the platform.
+3. Publish with a repeatable cadence.
 
-THIS WEEK'S CHALLENGE
-Take your last long-form piece and turn it into three posts. Reply and tell me how it went.
+The goal is not to create more work. It is to create more leverage.
+
+Pick one idea and turn it into a post, a thread, and a note. Then measure what actually lands.
 
 Until next time,
-The Prismify Team`,
+Prismify`,
 });
 
 export default function WorkspacePage() {
@@ -83,6 +83,17 @@ export default function WorkspacePage() {
     };
   }, [router]);
 
+  const inputMeta = useMemo(() => {
+    const trimmed = rawInput.trim();
+    const wordCount = trimmed ? trimmed.split(/\s+/).filter(Boolean).length : 0;
+    const readTime = Math.max(1, Math.ceil(wordCount / 160));
+
+    return {
+      wordCount,
+      readTime,
+    };
+  }, [rawInput]);
+
   if (!authChecked) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[#101514] px-5 text-sm text-[#aeb9b0]">
@@ -99,7 +110,7 @@ export default function WorkspacePage() {
       setGeneratedData(buildMockData(rawInput, selectedTone));
       setActiveTab("twitter");
       setIsLoading(false);
-    }, 2000);
+    }, 1200);
   };
 
   const getActiveText = () => {
@@ -120,125 +131,139 @@ export default function WorkspacePage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#101514] px-5 pb-8 pt-44 text-[#f5f1e8] sm:px-8 lg:px-12">
+    <main className="min-h-screen bg-[#101514] px-5 pb-8 pt-32 text-[#f5f1e8] sm:px-8 lg:px-12">
       <div className="mx-auto max-w-7xl">
-        {/* Navbar */}
-        <div className="mb-8 flex items-center justify-between border-b border-[#2d3934] pb-5">
+        <header className="mb-6 flex flex-col gap-4 border-b border-[#2d3934] pb-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#718078]">
-              ✨ Prismify workspace
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#718078]">
+              Studio
             </p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">
-              Create something remarkable.
+            <h1 className="mt-2 text-3xl font-semibold tracking-[-0.05em] sm:text-4xl">
+              Content repurposing workspace
             </h1>
           </div>
 
-          <div className="flex items-center gap-3">
-            <Link
-              href="/"
-              className="rounded-full border border-[#41504a] px-4 py-2 text-sm font-semibold transition hover:border-[#c5f56b] hover:text-[#c5f56b]"
-            >
-              Back home
-            </Link>
-            <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#41504a] bg-[#15201d] text-[#aeb9b0]">
-              <User size={18} />
-            </div>
+          <div className="flex flex-wrap items-center gap-2 text-xs text-[#aeb9b0]">
+            <span className="rounded-full border border-[#41504a] bg-[#15201d] px-3 py-1.5">
+              {selectedTone}
+            </span>
+            <span className="rounded-full border border-[#41504a] bg-[#15201d] px-3 py-1.5">
+              {rawInput.trim() ? `${inputMeta.wordCount} words` : "Draft mode"}
+            </span>
+            <span className="rounded-full border border-[#41504a] bg-[#15201d] px-3 py-1.5">
+              {rawInput.trim() ? `${inputMeta.readTime} min read` : "Ready"}
+            </span>
           </div>
-        </div>
+        </header>
 
-        <section className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
-          {/* Left: Input Engine */}
+        <section className="grid gap-5 lg:grid-cols-[0.82fr_1.18fr]">
           <form
             onSubmit={handleSubmit}
             className="rounded-[1.5rem] border border-[#34423b] bg-[#15201d] p-5 shadow-[0_0_0_1px_rgba(197,245,107,0.02)]"
           >
-            <label
-              htmlFor="source"
-              className="text-xs font-semibold uppercase tracking-[0.18em] text-[#aeb9b0]"
-            >
-              Source Content
-            </label>
+            <div className="flex items-center justify-between gap-3">
+              <label
+                htmlFor="source"
+                className="text-xs font-semibold uppercase tracking-[0.18em] text-[#aeb9b0]"
+              >
+                Source content
+              </label>
+              <span className="text-xs text-[#718078]">
+                {rawInput.trim() ? `${Math.min(rawInput.trim().length, 999)} chars` : "No content yet"}
+              </span>
+            </div>
+
             <textarea
               id="source"
               value={rawInput}
               onChange={(e) => setRawInput(e.target.value)}
               className="mt-5 min-h-[18rem] w-full resize-none rounded-[1rem] border border-[#46544c] bg-[#111816] p-4 text-sm leading-6 text-[#d3dbd2] outline-none placeholder:text-[#718078] focus:border-[#c5f56b] focus:ring-2 focus:ring-[#c5f56b]/30"
-              placeholder="Paste your transcript, rough idea, or brain dump here..."
+              placeholder="Paste a transcript, idea, article draft, or rough note..."
             />
 
-            <label
-              htmlFor="tone"
-              className="mt-5 block text-xs font-semibold uppercase tracking-[0.18em] text-[#aeb9b0]"
-            >
-              Select Tone
-            </label>
-            <div className="relative mt-3">
-              <select
-                id="tone"
-                value={selectedTone}
-                onChange={(e) => setSelectedTone(e.target.value)}
-                className="w-full appearance-none rounded-xl border border-[#46544c] bg-[#111816] px-4 py-3 pr-10 text-sm text-[#d3dbd2] outline-none focus:border-[#c5f56b] focus:ring-2 focus:ring-[#c5f56b]/30"
+            <div className="mt-5 rounded-[1rem] border border-[#2d3934] bg-[#111816] p-3">
+              <label
+                htmlFor="tone"
+                className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#aeb9b0]"
               >
-                {TONES.map((tone) => (
-                  <option key={tone} value={tone}>
-                    {tone}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown
-                size={16}
-                className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#718078]"
-              />
+                Tone
+              </label>
+              <div className="relative mt-2">
+                <select
+                  id="tone"
+                  value={selectedTone}
+                  onChange={(e) => setSelectedTone(e.target.value)}
+                  className="w-full appearance-none rounded-xl border border-[#46544c] bg-[#111816] px-4 py-3 pr-10 text-sm text-[#d3dbd2] outline-none focus:border-[#c5f56b] focus:ring-2 focus:ring-[#c5f56b]/30"
+                >
+                  {TONES.map((tone) => (
+                    <option key={tone} value={tone}>
+                      {tone}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown
+                  size={16}
+                  className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#718078]"
+                />
+              </div>
             </div>
 
             <button
               type="submit"
               disabled={isLoading || !rawInput.trim()}
               className={`mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#c5f56b] to-[#7fe0a8] px-4 py-3 text-sm font-bold text-[#101514] shadow-[0_0_20px_rgba(197,245,107,0.2)] transition hover:brightness-110 ${
-                isLoading || !rawInput.trim()
-                  ? "cursor-not-allowed opacity-50"
-                  : ""
+                isLoading || !rawInput.trim() ? "cursor-not-allowed opacity-50" : ""
               }`}
             >
               {isLoading ? (
                 <>
                   <Loader2 size={16} className="animate-spin" />
-                  Splitting...
+                  Creating variants...
                 </>
               ) : (
-                "⚡ Split the Prism"
+                "⚡ Generate content"
               )}
             </button>
           </form>
 
-          {/* Right: Spectrum Output */}
           <div className="flex min-h-[28rem] flex-col rounded-[1.5rem] border border-[#34423b] bg-[#0f1614] p-5">
-            <div className="flex flex-wrap gap-2">
-              {TABS.map((tab) => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${
-                    activeTab === tab.id
-                      ? "border-[#c5f56b] bg-[#c5f56b] text-[#101514]"
-                      : "border-[#41504a] text-[#aeb9b0] hover:border-[#c5f56b] hover:text-[#c5f56b]"
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#2d3934] pb-4">
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#718078]">
+                  Output
+                </p>
+                <h2 className="mt-1 text-xl font-semibold text-[#eef1ed]">
+                  {generatedData ? "Generated variants" : "Ready when you are"}
+                </h2>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {TABS.map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
+                      activeTab === tab.id
+                        ? "border-[#c5f56b] bg-[#c5f56b] text-[#101514]"
+                        : "border-[#41504a] text-[#aeb9b0] hover:border-[#c5f56b] hover:text-[#c5f56b]"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div className="mt-5 flex flex-1 flex-col">
               {!generatedData ? (
-                <div className="flex flex-1 items-center justify-center rounded-[1rem] border border-dashed border-[#405047] p-6 text-center">
-                  <div>
+                <div className="flex flex-1 flex-col items-center justify-center rounded-[1rem] border border-dashed border-[#405047] p-6 text-center">
+                  <div className="max-w-sm">
                     <p className="text-lg font-semibold text-[#eef1ed]">
-                      Your AI-crafted spectrum will appear here...
+                      Turn one idea into a full content system.
                     </p>
                     <p className="mt-2 text-sm text-[#89968d]">
-                      Choose a tone and generate your first post.
+                      Paste your source, choose the tone, and generate multiple formats from the same message.
                     </p>
                   </div>
                 </div>
@@ -275,11 +300,11 @@ export default function WorkspacePage() {
                   >
                     {copied ? (
                       <>
-                        <Check size={16} /> ✓ Copied!
+                        <Check size={16} /> Copied!
                       </>
                     ) : (
                       <>
-                        <Copy size={16} /> Copy to Clipboard
+                        <Copy size={16} /> Copy output
                       </>
                     )}
                   </button>
