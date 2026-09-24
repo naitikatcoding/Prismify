@@ -65,17 +65,39 @@ export default function WorkspacePage() {
   const [copied, setCopied] = useState(false);
   const [generatedData, setGeneratedData] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
+  const [savedCount, setSavedCount] = useState(0);
+  const [saveStatus, setSaveStatus] = useState("idle");
 
   useEffect(() => {
     let isMounted = true;
 
-    getSession().then((session) => {
-      if (isMounted) {
-        setAuthChecked(true);
-        if (!session) {
-          router.replace("/login");
-        }
+    const loadSessionData = async () => {
+      const session = await getSession();
+
+      if (!isMounted) return;
+
+      setAuthChecked(true);
+      if (!session) {
+        router.replace("/login");
+        return;
       }
+
+      try {
+        const response = await fetch("/api/content");
+        if (response.ok) {
+          const data = await response.json();
+          if (isMounted) {
+            setSavedCount(data.content?.length || 0);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load saved content:", error);
+      }
+    };
+
+    loadSessionData().catch((error) => {
+      console.error("Failed to check session:", error);
+      if (isMounted) setAuthChecked(true);
     });
 
     return () => {
@@ -106,10 +128,31 @@ export default function WorkspacePage() {
     e.preventDefault();
     if (isLoading || !rawInput.trim()) return;
     setIsLoading(true);
+    setSaveStatus("saving");
     setTimeout(() => {
-      setGeneratedData(buildMockData(rawInput, selectedTone));
+      const outputs = buildMockData(rawInput, selectedTone);
+      setGeneratedData(outputs);
       setActiveTab("twitter");
       setIsLoading(false);
+
+      fetch("/api/content", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          rawInput,
+          tone: selectedTone,
+          outputs,
+        }),
+      })
+        .then(async (response) => {
+          if (!response.ok) throw new Error("Content save failed");
+          setSavedCount((count) => count + 1);
+          setSaveStatus("saved");
+        })
+        .catch((error) => {
+          console.error("Failed to save generated content:", error);
+          setSaveStatus("error");
+        });
     }, 1200);
   };
 
@@ -152,6 +195,9 @@ export default function WorkspacePage() {
             </span>
             <span className="rounded-full border border-[#41504a] bg-[#15201d] px-3 py-1.5">
               {rawInput.trim() ? `${inputMeta.readTime} min read` : "Ready"}
+            </span>
+            <span className="rounded-full border border-[#41504a] bg-[#15201d] px-3 py-1.5">
+              {savedCount} saved
             </span>
           </div>
         </header>
@@ -224,6 +270,11 @@ export default function WorkspacePage() {
                 "⚡ Generate content"
               )}
             </button>
+            <p className="mt-3 text-center text-xs text-[#718078]" aria-live="polite">
+              {saveStatus === "saving" && "Saving to your studio..."}
+              {saveStatus === "saved" && "Saved to your studio"}
+              {saveStatus === "error" && "Could not save this version"}
+            </p>
           </form>
 
           <div className="flex min-h-[28rem] flex-col rounded-[1.5rem] border border-[#34423b] bg-[#0f1614] p-5">

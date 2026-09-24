@@ -1,6 +1,8 @@
 import NextAuth from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
+import connectToDatabase from "@/lib/mongodb";
+import User from "@/models/User";
 
 export const authOptions = {
   providers: [
@@ -87,6 +89,22 @@ export const authOptions = {
 
         user.username = username;
         user.name = username;
+
+        await connectToDatabase();
+        const savedUser = await User.findOneAndUpdate(
+          { email: normalizedEmail },
+          {
+            $set: {
+              email: normalizedEmail,
+              profilePic: user.image || profile?.picture || profile?.avatar_url,
+              updatedAt: new Date(),
+            },
+            $setOnInsert: { createdAt: new Date() },
+          },
+          { new: true, upsert: true, setDefaultsOnInsert: true }
+        );
+
+        user.id = savedUser._id.toString();
 
         return true;
       } catch (error) {
