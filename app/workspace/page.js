@@ -90,7 +90,7 @@ export default function WorkspacePage() {
     setErrorMessage("");
 
     try {
-      const response = await fetch("/api/content/generate", {
+      const response = await fetch("/api/content", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
