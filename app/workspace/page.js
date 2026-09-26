@@ -13,49 +13,6 @@ const TABS = [
   { id: "newsletter", label: "📧 Newsletter" },
 ];
 
-const buildMockData = (input, tone) => ({
-  twitterThread: [
-    `1/ Most creators publish once and hope for traction. The smarter move is to turn one idea into a content system (${tone} style) 🧵`,
-    `2/ Start with a single core insight: "${input.slice(0, 80).trim()}${input.length > 80 ? "..." : ""}". Strip the noise, keep the point, and reshape it for every channel.`,
-    `3/ One idea, three formats, more reach. Threads drive discovery, LinkedIn builds authority, and newsletters deepen trust. That's the leverage.`,
-  ],
-  linkedinPost: `Most people repurpose content by copying the same post across channels.
-
-That works for speed, but not for impact.
-
-The better play is simple: start with one strong insight, then adapt the structure to the platform.
-
-For Twitter, you aim for momentum.
-For LinkedIn, you aim for authority.
-For newsletters, you aim for depth.
-
-The result is not just more content — it's better content that feels native to each audience.
-
-A strong content system beats a louder content schedule.
-
-#ContentStrategy #CreatorEconomy #BrandBuilding`,
-  newsletter: `Subject: Turn one idea into three formats
-
-Hey there,
-
-This week’s idea is simple: stop treating every platform as a separate content job.
-
-The core message
-${input.slice(0, 160).trim()}${input.length > 160 ? "..." : ""}
-
-The framework
-1. Distill the takeaway.
-2. Adapt the structure to the platform.
-3. Publish with a repeatable cadence.
-
-The goal is not to create more work. It is to create more leverage.
-
-Pick one idea and turn it into a post, a thread, and a note. Then measure what actually lands.
-
-Until next time,
-Prismify`,
-});
-
 export default function WorkspacePage() {
   const router = useRouter();
   const [rawInput, setRawInput] = useState("");
@@ -67,6 +24,7 @@ export default function WorkspacePage() {
   const [authChecked, setAuthChecked] = useState(false);
   const [savedCount, setSavedCount] = useState(0);
   const [saveStatus, setSaveStatus] = useState("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     let isMounted = true;
@@ -124,43 +82,55 @@ export default function WorkspacePage() {
     );
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (isLoading || !rawInput.trim()) return;
     setIsLoading(true);
     setSaveStatus("saving");
-    setTimeout(() => {
-      const outputs = buildMockData(rawInput, selectedTone);
-      setGeneratedData(outputs);
-      setActiveTab("twitter");
-      setIsLoading(false);
+    setErrorMessage("");
 
-      fetch("/api/content", {
+    try {
+      const response = await fetch("/api/content/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           rawInput,
           tone: selectedTone,
-          outputs,
         }),
-      })
-        .then(async (response) => {
-          if (!response.ok) throw new Error("Content save failed");
-          setSavedCount((count) => count + 1);
-          setSaveStatus("saved");
-        })
-        .catch((error) => {
-          console.error("Failed to save generated content:", error);
-          setSaveStatus("error");
-        });
-    }, 1200);
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to generate content.");
+      }
+
+      if (data.content?.outputs) {
+        setGeneratedData(data.content.outputs);
+        setActiveTab("twitter");
+        setSavedCount((count) => count + 1);
+        setSaveStatus("saved");
+      } else {
+        throw new Error("Invalid output received from server.");
+      }
+    } catch (error) {
+      console.error("Failed to generate content:", error);
+      setErrorMessage(error.message || "Something went wrong while generating content.");
+      setSaveStatus("error");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const getActiveText = () => {
     if (!generatedData) return "";
-    if (activeTab === "twitter") return generatedData.twitterThread.join("\n\n");
-    if (activeTab === "linkedin") return generatedData.linkedinPost;
-    return generatedData.newsletter;
+    if (activeTab === "twitter") {
+      return Array.isArray(generatedData.twitterThread)
+        ? generatedData.twitterThread.join("\n\n")
+        : (generatedData.twitterThread || "");
+    }
+    if (activeTab === "linkedin") return generatedData.linkedinPost || "";
+    return generatedData.newsletter || "";
   };
 
   const handleCopy = async () => {
@@ -271,9 +241,11 @@ export default function WorkspacePage() {
               )}
             </button>
             <p className="mt-3 text-center text-xs text-[#718078]" aria-live="polite">
-              {saveStatus === "saving" && "Saving to your studio..."}
-              {saveStatus === "saved" && "Saved to your studio"}
-              {saveStatus === "error" && "Could not save this version"}
+              {saveStatus === "saving" && "Generating variants with Groq AI..."}
+              {saveStatus === "saved" && "✨ Generated & saved to your studio"}
+              {saveStatus === "error" && (
+                <span className="text-red-400">{errorMessage || "Could not generate content"}</span>
+              )}
             </p>
           </form>
 
@@ -323,7 +295,10 @@ export default function WorkspacePage() {
                   <div className="flex-1 overflow-y-auto rounded-[1rem] border border-[#34423b] bg-[#111816] p-5">
                     {activeTab === "twitter" ? (
                       <div className="space-y-0">
-                        {generatedData.twitterThread.map((tweet, i, arr) => (
+                        {(Array.isArray(generatedData.twitterThread)
+                          ? generatedData.twitterThread
+                          : [generatedData.twitterThread]
+                        ).map((tweet, i, arr) => (
                           <div key={i} className="relative flex gap-4 pb-4">
                             {i < arr.length - 1 && (
                               <span className="absolute left-4 top-9 h-[calc(100%-2rem)] w-px bg-[#34423b]" />
@@ -331,7 +306,7 @@ export default function WorkspacePage() {
                             <span className="z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#c5f56b]/50 bg-[#15201d] text-xs font-bold text-[#c5f56b]">
                               {i + 1}
                             </span>
-                            <p className="flex-1 rounded-xl border border-[#34423b] bg-[#15201d] p-4 text-sm leading-6 text-[#d3dbd2]">
+                            <p className="flex-1 whitespace-pre-line rounded-xl border border-[#34423b] bg-[#15201d] p-4 text-sm leading-6 text-[#d3dbd2]">
                               {tweet}
                             </p>
                           </div>
