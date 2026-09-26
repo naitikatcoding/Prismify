@@ -101,10 +101,10 @@ const Footer = () => {
               Follow along
             </p>
             <nav className="mt-4 flex flex-col items-start gap-3 text-sm text-[#aeb9b0]">
-              <a className="transition hover:text-[#c5f56b]" href="www.linkedin.com/in/naitikatwork" target="_blank" rel="noreferrer">
+              <a className="transition hover:text-[#c5f56b]" href="https://www.linkedin.com/in/naitik-gupta-509b6a37a" target="blank" rel="noreferrer">
                 LinkedIn
               </a>
-              <a className="transition hover:text-[#c5f56b]" href="https://x.com/NGupta20845" target="_blank" rel="noreferrer">
+              <a className="transition hover:text-[#c5f56b]" href="https://x.com/NGupta20845" target="blank" rel="noreferrer">
                 X / Twitter
               </a>
             </nav>
