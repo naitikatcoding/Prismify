@@ -90,9 +90,9 @@ const Footer = () => {
               <Link className="transition hover:text-[#c5f56b]" href={studioHref}>
                 {session ? "Open workspace" : "Get started"}
               </Link>
-              <a className="transition hover:text-[#c5f56b]" href="mailto:hello@prismify.app">
+              <Link className="transition hover:text-[#c5f56b]" href="/contact">
                 Contact us
-              </a>
+              </Link>
             </nav>
           </div>
 
