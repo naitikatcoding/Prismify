@@ -41,44 +41,45 @@ export async function POST(req) {
       console.error("[Contact API] Database save warning:", dbError.message);
     }
 
-    // 2. Check for SMTP credentials to deliver directly to email
-    const smtpUser =
+    // 2. Discover SMTP credentials with support for multiple alias names
+    const rawSmtpUser =
       process.env.EMAIL_SERVER_USER ||
       process.env.SMTP_USER ||
-      process.env.GMAIL_USER;
-    const smtpPass =
+      process.env.GMAIL_USER ||
+      process.env.EMAIL_USER ||
+      process.env.USER_EMAIL ||
+      "naitikgupta2713@gmail.com";
+
+    const rawSmtpPass =
       process.env.EMAIL_SERVER_PASSWORD ||
       process.env.SMTP_PASS ||
-      process.env.GMAIL_APP_PASSWORD;
+      process.env.SMTP_PASSWORD ||
+      process.env.GMAIL_APP_PASSWORD ||
+      process.env.GMAIL_PASSWORD ||
+      process.env.EMAIL_PASS ||
+      process.env.EMAIL_PASSWORD ||
+      process.env.APP_PASSWORD ||
+      process.env.GOOGLE_APP_PASSWORD;
+
+    const smtpUser = rawSmtpUser ? rawSmtpUser.trim() : "";
+    // Google App Passwords often contain spaces (e.g. "abcd efgh ijkl mnop"), strip them:
+    const smtpPass = rawSmtpPass ? rawSmtpPass.trim().replace(/\s+/g, "") : "";
 
     let emailDelivered = false;
-    let deliveryMessage = "Feedback saved successfully.";
+    let deliveryMessage = "Feedback saved to database.";
+    let needsActivation = false;
 
-    if (smtpUser && smtpPass) {
+    if (smtpPass) {
       try {
-        const isGmail =
-          smtpUser.includes("@gmail.com") ||
-          process.env.EMAIL_SERVER_HOST?.includes("gmail");
+        console.log(`[Contact API] Attempting Gmail SMTP dispatch with user: ${smtpUser}`);
 
-        const transporter = nodemailer.createTransport(
-          isGmail
-            ? {
-                service: "gmail",
-                auth: {
-                  user: smtpUser,
-                  pass: smtpPass,
-                },
-              }
-            : {
-                host: process.env.EMAIL_SERVER_HOST || "smtp.gmail.com",
-                port: Number(process.env.EMAIL_SERVER_PORT) || 587,
-                secure: process.env.EMAIL_SERVER_SECURE === "true",
-                auth: {
-                  user: smtpUser,
-                  pass: smtpPass,
-                },
-              }
-        );
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: smtpUser,
+            pass: smtpPass,
+          },
+        });
 
         const ratingStars = "⭐".repeat(Math.max(1, Math.min(5, cleanRating)));
 
@@ -125,9 +126,8 @@ export async function POST(req) {
               <p style="color: #f5f1e8; font-size: 15px; line-height: 1.6; white-space: pre-wrap; margin: 0;">${cleanMessage}</p>
             </div>
 
-            <div style="font-size: 12px; color: #718078; border-top: 1px solid #2d3934; padding-top: 16px; display: flex; justify-content: space-between;">
-              <span>Prismify Website Feedback</span>
-              <span>Reply directly to this email to reach the user</span>
+            <div style="font-size: 12px; color: #718078; border-top: 1px solid #2d3934; padding-top: 16px;">
+              <span>Prismify Website Feedback — Reply directly to this email to reach the user</span>
             </div>
           </div>
         `;
@@ -142,34 +142,81 @@ export async function POST(req) {
         });
 
         emailDelivered = true;
-        deliveryMessage = "Feedback sent directly to your email inbox!";
-
-        if (savedFeedback) {
-          savedFeedback.emailSent = true;
-          await savedFeedback.save();
-        }
+        deliveryMessage = "Feedback sent directly to your email inbox via SMTP!";
+        console.log(`[Contact API] Successfully dispatched email to ${RECIPIENT_EMAIL}`);
       } catch (mailError) {
-        console.error("[Contact API] Mail delivery failed:", mailError.message);
-        deliveryMessage = "Feedback saved to database. Mail delivery will require checking SMTP credentials.";
+        console.error("[Contact API] SMTP delivery error:", mailError.message);
       }
     }
 
-    // Build mailto fallback link for seamless zero-config direct email sending
-    const mailtoSubject = encodeURIComponent(`[Prismify Feedback] ${cleanCategory}: ${cleanSubject}`);
-    const mailtoBody = encodeURIComponent(
-      `Name: ${cleanName}\nEmail: ${cleanEmail}\nCategory: ${cleanCategory}\nRating: ${cleanRating}/5\n\nFeedback:\n${cleanMessage}`
-    );
-    const mailtoUrl = `mailto:${RECIPIENT_EMAIL}?subject=${mailtoSubject}&body=${mailtoBody}`;
+    // 3. Fallback: If SMTP wasn't used or failed, try FormSubmit zero-setup HTTP relay
+    if (!emailDelivered) {
+      try {
+        const origin = req.headers.get("origin") || "http://localhost:3000";
+        const formSubmitRes = await fetch(
+          `https://formsubmit.co/ajax/${RECIPIENT_EMAIL}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+              Referer: origin,
+            },
+            body: JSON.stringify({
+              _subject: `[Prismify Feedback] ${cleanCategory}: ${cleanSubject}`,
+              Name: cleanName,
+              Email: cleanEmail,
+              Category: cleanCategory,
+              Rating: `${cleanRating} / 5`,
+              Subject: cleanSubject,
+              Message: cleanMessage,
+              _template: "table",
+            }),
+          }
+        );
+
+        const fsData = await formSubmitRes.json();
+        if (fsData.success === "true" || fsData.success === true) {
+          emailDelivered = true;
+          deliveryMessage = "Feedback routed directly to your email inbox!";
+        } else if (
+          typeof fsData.message === "string" &&
+          fsData.message.toLowerCase().includes("activation")
+        ) {
+          needsActivation = true;
+          deliveryMessage =
+            "An activation link has been sent to your email! Click it once to receive all future feedback directly in your inbox.";
+        }
+      } catch (fsErr) {
+        console.error("[Contact API] FormSubmit fallback warning:", fsErr.message);
+      }
+    }
+
+    // Update MongoDB status if delivered
+    if (emailDelivered && savedFeedback) {
+      savedFeedback.emailSent = true;
+      await savedFeedback.save();
+    }
+
+    // 4. Construct direct client links for instant compose
+    const mailSubject = `[Prismify Feedback] ${cleanCategory}: ${cleanSubject}`;
+    const mailBody = `Hello Naitik,\n\nHere is feedback from Prismify:\n\nName: ${cleanName}\nEmail: ${cleanEmail}\nCategory: ${cleanCategory}\nRating: ${cleanRating}/5\n\nMessage:\n${cleanMessage}\n`;
+
+    const encodedSubject = encodeURIComponent(mailSubject);
+    const encodedBody = encodeURIComponent(mailBody);
+
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${RECIPIENT_EMAIL}&su=${encodedSubject}&body=${encodedBody}`;
+    const mailtoUrl = `mailto:${RECIPIENT_EMAIL}?subject=${encodedSubject}&body=${encodedBody}`;
 
     return NextResponse.json({
       success: true,
-      deliveredVia: emailDelivered ? "smtp" : "database",
+      deliveredVia: emailDelivered ? "email" : "database",
       emailDelivered,
+      needsActivation,
       recipient: RECIPIENT_EMAIL,
+      gmailUrl,
       mailtoUrl,
-      message: emailDelivered
-        ? "Your feedback was sent directly to my inbox!"
-        : "Feedback received and saved! You can also send a direct email copy if you wish.",
+      message: deliveryMessage,
     });
   } catch (error) {
     console.error("[Contact API Error]:", error);

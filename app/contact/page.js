@@ -209,28 +209,63 @@ export default function ContactPage() {
                       <CheckCircle2 className="h-8 w-8" />
                     </div>
                     <h3 className="text-2xl font-bold text-[#f5f1e8]">
-                      Thank You! Feedback Dispatched
+                      {submitResult?.emailDelivered
+                        ? "Delivered Directly to Mailbox!"
+                        : "Feedback Recorded & Ready!"}
                     </h3>
                     <p className="mt-2 max-w-md text-sm text-[#aeb9b0]">
-                      {submitResult?.deliveredVia === "smtp"
-                        ? "Your feedback was sent directly to my personal email inbox. I read every single note!"
-                        : "Your feedback has been successfully recorded in the database and prepared for direct mail!"}
+                      {submitResult?.emailDelivered
+                        ? `Your feedback was successfully routed and delivered straight to ${developerEmail}. Thank you!`
+                        : "Your message has been saved in the database."}
                     </p>
 
-                    {/* Fallback / Direct mailto action */}
-                    {submitResult?.mailtoUrl && (
-                      <div className="mt-6 flex flex-col items-center gap-2.5 rounded-2xl border border-[#2d3934] bg-[#18221e]/70 p-4 max-w-md w-full">
-                        <span className="text-xs text-[#aeb9b0]">
-                          Want to open this directly in your local mail client or Gmail?
+                    {/* Activation Notice if FormSubmit was triggered */}
+                    {submitResult?.needsActivation && (
+                      <div className="mt-5 rounded-2xl border border-amber-500/40 bg-amber-500/10 p-4 text-left max-w-md w-full">
+                        <div className="flex items-start gap-2.5">
+                          <AlertCircle className="h-5 w-5 text-amber-400 shrink-0 mt-0.5" />
+                          <div className="text-xs text-amber-200/90 leading-relaxed">
+                            <span className="font-semibold text-amber-300 block mb-1">
+                              One-Time Activation Email Sent!
+                            </span>
+                            An activation email from FormSubmit was sent to{" "}
+                            <span className="font-mono font-semibold text-white">{developerEmail}</span>.
+                            Check your inbox (or spam) and click <strong>&quot;Activate Form&quot;</strong> once.
+                            After that, every feedback sent here will automatically arrive in your email!
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 1-Click Direct Compose actions */}
+                    {submitResult?.gmailUrl && (
+                      <div className="mt-5 flex flex-col items-center gap-3 rounded-2xl border border-[#2d3934] bg-[#18221e]/80 p-5 max-w-md w-full">
+                        <span className="text-xs font-medium text-[#f5f1e8]">
+                          {submitResult?.emailDelivered
+                            ? "Want to see or follow up from your own mail?"
+                            : "Launch your mail client to send a direct copy:"}
                         </span>
-                        <a
-                          href={submitResult.mailtoUrl}
-                          className="inline-flex items-center gap-2 rounded-xl bg-[#263a2f] px-4 py-2 text-xs font-semibold text-[#c5f56b] transition hover:bg-[#324a3d] border border-[#c5f56b]/30"
-                        >
-                          <Mail className="h-3.5 w-3.5" />
-                          <span>Open in Mail Client / Gmail</span>
-                          <ExternalLink className="h-3 w-3" />
-                        </a>
+                        <div className="flex flex-wrap items-center justify-center gap-2.5 w-full">
+                          <a
+                            href={submitResult.gmailUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-[#c5f56b] px-4 py-2.5 text-xs font-bold text-[#101514] transition hover:bg-[#b5e759] shadow-md shadow-[#c5f56b]/20"
+                          >
+                            <Mail className="h-4 w-4" />
+                            <span>Open in Gmail (1-Click Send)</span>
+                            <ExternalLink className="h-3 w-3" />
+                          </a>
+                          {submitResult.mailtoUrl && (
+                            <a
+                              href={submitResult.mailtoUrl}
+                              className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-[#34433b] bg-[#141d19] px-3.5 py-2.5 text-xs font-medium text-[#aeb9b0] transition hover:text-[#f5f1e8] hover:border-[#c5f56b]/40"
+                              title="Open system default mail app"
+                            >
+                              <span>Mail App</span>
+                            </a>
+                          )}
+                        </div>
                       </div>
                     )}
 
