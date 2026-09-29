@@ -205,10 +205,6 @@ const LoginContent = () => {
   );
 };
 
-const Page = () => (
-  <SessionProvider>
-    <LoginContent />
-  </SessionProvider>
-);
+const Page = () => <LoginContent />;
 
 export default Page;

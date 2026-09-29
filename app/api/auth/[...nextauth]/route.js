@@ -90,21 +90,33 @@ export const authOptions = {
         user.username = username;
         user.name = username;
 
+        const resolvedImage =
+          user?.image ||
+          profile?.picture ||
+          profile?.avatar_url ||
+          (profile?.photos && profile.photos[0]?.value) ||
+          null;
+
         await connectToDatabase();
+        const updateDoc = {
+          email: normalizedEmail,
+          updatedAt: new Date(),
+        };
+        if (resolvedImage) {
+          updateDoc.profilePic = resolvedImage;
+        }
+
         const savedUser = await User.findOneAndUpdate(
           { email: normalizedEmail },
           {
-            $set: {
-              email: normalizedEmail,
-              profilePic: user.image || profile?.picture || profile?.avatar_url,
-              updatedAt: new Date(),
-            },
+            $set: updateDoc,
             $setOnInsert: { createdAt: new Date() },
           },
           { new: true, upsert: true, setDefaultsOnInsert: true }
         );
 
         user.id = savedUser._id.toString();
+        user.image = resolvedImage || savedUser.profilePic || null;
 
         return true;
       } catch (error) {
@@ -113,7 +125,7 @@ export const authOptions = {
       }
     },
 
-    async jwt({ token, user, trigger, session }) {
+    async jwt({ token, user, account, profile, trigger, session }) {
       // If session update was requested from client
       if (trigger === "update" && session) {
         if (session.user?.username) {
@@ -123,6 +135,9 @@ export const authOptions = {
           token.username = session.user.name;
           token.name = session.user.name;
         }
+        if (session.user?.image) {
+          token.picture = session.user.image;
+        }
       }
 
       // Attached on initial sign in
@@ -131,6 +146,32 @@ export const authOptions = {
         token.username = user.username;
         if (user.username) {
           token.name = user.username;
+        }
+        const avatar =
+          user.image ||
+          profile?.picture ||
+          profile?.avatar_url ||
+          token.picture ||
+          null;
+        if (avatar) {
+          token.picture = avatar;
+        }
+      }
+
+      // If token.picture is missing, try loading from database
+      if (!token.picture && (token.id || token.email)) {
+        try {
+          await connectToDatabase();
+          const query = token.id ? { _id: token.id } : { email: token.email };
+          const dbUser = await User.findOne(query).select("profilePic username");
+          if (dbUser?.profilePic) {
+            token.picture = dbUser.profilePic;
+          }
+          if (!token.username && dbUser?.username) {
+            token.username = dbUser.username;
+          }
+        } catch (dbErr) {
+          console.error("[NextAuth] Error retrieving profilePic in jwt callback:", dbErr);
         }
       }
 
@@ -144,6 +185,10 @@ export const authOptions = {
         // Keep session.user.name matching the creator page username used across the app
         if (token.username) {
           session.user.name = token.username;
+        }
+        // Ensure image is always populated without fail
+        if (token.picture) {
+          session.user.image = token.picture;
         }
       }
       return session;
