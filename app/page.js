@@ -160,11 +160,10 @@ export default function Home() {
                           setActiveTone(tone);
                           setGenerated(false);
                         }}
-                        className={`rounded-md px-2.5 py-1.5 text-xs transition ${
-                          activeTone === tone
+                        className={`rounded-md px-2.5 py-1.5 text-xs transition ${activeTone === tone
                             ? "bg-[#293a30] text-[#c5f56b]"
                             : "border border-[#46544c] text-[#aeb9b0] hover:border-[#c5f56b] hover:text-[#c5f56b]"
-                        }`}
+                          }`}
                         aria-pressed={activeTone === tone}
                       >
                         {tone}
@@ -196,11 +195,10 @@ export default function Home() {
                             setActivePlatform(name);
                             setGenerated(false);
                           }}
-                          className={`border-b-2 pb-2 transition ${
-                            activePlatform === name
+                          className={`border-b-2 pb-2 transition ${activePlatform === name
                               ? "border-[#17211d] text-[#17211d]"
                               : "border-transparent text-[#859089] hover:text-[#17211d]"
-                          }`}
+                            }`}
                           aria-pressed={activePlatform === name}
                         >
                           {platforms[name].label}
@@ -225,9 +223,8 @@ export default function Home() {
                   </div>
 
                   <div
-                    className={`max-h-64 overflow-y-auto wrap-anywhere whitespace-pre-line pr-2 text-sm leading-6 scrollbar-none [&::-webkit-scrollbar]:hidden ${
-                      generated ? "text-[#17211d]" : "text-[#52605a]"
-                    }`}
+                    className={`max-h-64 overflow-y-auto wrap-anywhere whitespace-pre-line pr-2 text-sm leading-6 scrollbar-none [&::-webkit-scrollbar]:hidden ${generated ? "text-[#17211d]" : "text-[#52605a]"
+                      }`}
                   >
                     {currentOutput}
                   </div>
@@ -288,59 +285,58 @@ export default function Home() {
           className="grid gap-5 sm:grid-cols-3"
         >
           {/* Step 1 visual */}
-          <div className="group aspect-square w-full rounded-2xl border border-[#405047] bg-[#18211e] p-6 flex flex-col justify-between overflow-hidden relative">
+          <div className="group aspect-square w-full rounded-2xl border border-[#405047] bg-[#18211e] p-6 flex flex-col overflow-hidden relative">
             <div className="absolute inset-0 bg-gradient-to-br from-[#c5f56b]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <div className="text-[#c5f56b] text-4xl mb-4">📝</div>
-            <div className="space-y-3">
+            <span className="text-3xl leading-none mb-5 relative">📝</span>
+            <div className="flex-1 flex flex-col justify-center space-y-2.5 relative">
               {["voice note transcript...", "half-finished idea...", "rough article draft..."].map((t, i) => (
-                <div key={i} className="rounded-lg border border-[#2d3934] bg-[#111816] px-3 py-2 text-xs text-[#718078] font-mono">
+                <div key={i} className="rounded-lg border border-[#2d3934] bg-[#111816] px-3 py-2 text-xs text-[#718078] font-mono truncate">
                   {t}
                 </div>
               ))}
             </div>
-            <p className="mt-4 text-xs text-[#aeb9b0] font-medium">Your messy raw input</p>
+            <p className="mt-5 text-xs font-semibold text-[#aeb9b0] tracking-wide relative">Your messy raw input</p>
           </div>
 
           {/* Step 2 visual */}
-          <div className="group aspect-square w-full rounded-2xl border border-[#405047] bg-[#18211e] p-6 flex flex-col justify-between overflow-hidden relative">
+          <div className="group aspect-square w-full rounded-2xl border border-[#405047] bg-[#18211e] p-6 flex flex-col overflow-hidden relative">
             <div className="absolute inset-0 bg-gradient-to-br from-[#c5f56b]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <div className="text-[#c5f56b] text-4xl mb-4">⚙️</div>
-            <div className="space-y-2">
+            <span className="text-3xl leading-none mb-5 relative">⚙️</span>
+            <div className="flex-1 flex flex-col justify-center space-y-2 relative">
               {["Professional", "Conversational", "Bold"].map((tone, i) => (
-                <div key={tone} className={`rounded-full px-3 py-1.5 text-xs font-semibold border ${
-                  i === 0
+                <div key={tone} className={`rounded-full px-3 py-1.5 text-xs font-semibold border ${i === 0
                     ? "border-[#c5f56b] bg-[#293a30] text-[#c5f56b]"
                     : "border-[#46544c] text-[#aeb9b0]"
-                }`}>
+                  }`}>
                   {tone}
                 </div>
               ))}
-              <div className="mt-3 h-1.5 w-full rounded-full bg-[#2d3934] overflow-hidden">
-                <div className="h-full w-3/4 rounded-full bg-gradient-to-r from-[#c5f56b] to-[#7fe0a8] transition-all duration-1000" />
+              <div className="mt-2 h-1.5 w-full rounded-full bg-[#2d3934] overflow-hidden">
+                <div className="h-full w-3/4 rounded-full bg-gradient-to-r from-[#c5f56b] to-[#7fe0a8]" />
               </div>
               <p className="text-[10px] text-[#718078]">AI rewriting in progress…</p>
             </div>
-            <p className="mt-4 text-xs text-[#aeb9b0] font-medium">Pick your tone & style</p>
+            <p className="mt-5 text-xs font-semibold text-[#aeb9b0] tracking-wide relative">Pick your tone &amp; style</p>
           </div>
 
           {/* Step 3 visual */}
-          <div className="group aspect-square w-full rounded-2xl border border-[#405047] bg-[#18211e] p-6 flex flex-col justify-between overflow-hidden relative">
+          <div className="group aspect-square w-full rounded-2xl border border-[#405047] bg-[#18211e] p-6 flex flex-col overflow-hidden relative">
             <div className="absolute inset-0 bg-gradient-to-br from-[#c5f56b]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <div className="text-[#c5f56b] text-4xl mb-4">🚀</div>
-            <div className="space-y-2">
+            <span className="text-3xl leading-none mb-5 relative">🚀</span>
+            <div className="flex-1 flex flex-col justify-center space-y-2 relative">
               {[
                 { icon: "🐦", label: "X Thread", color: "#1da1f2" },
                 { icon: "💼", label: "LinkedIn Post", color: "#0a66c2" },
                 { icon: "📧", label: "Newsletter", color: "#c5f56b" },
               ].map(({ icon, label, color }) => (
-                <div key={label} className="flex items-center gap-2 rounded-lg border border-[#2d3934] bg-[#111816] px-3 py-2">
-                  <span className="text-sm">{icon}</span>
+                <div key={label} className="flex items-center gap-2.5 rounded-lg border border-[#2d3934] bg-[#111816] px-3 py-2.5">
+                  <span className="text-sm leading-none">{icon}</span>
                   <span className="text-xs text-[#d3dbd2]">{label}</span>
-                  <span className="ml-auto text-[10px] font-semibold" style={{ color }}>Ready</span>
+                  <span className="ml-auto text-[10px] font-bold" style={{ color }}>Ready ✓</span>
                 </div>
               ))}
             </div>
-            <p className="mt-4 text-xs text-[#aeb9b0] font-medium">Publish across every platform</p>
+            <p className="mt-5 text-xs font-semibold text-[#aeb9b0] tracking-wide relative">Publish across every platform</p>
           </div>
         </section>
 
