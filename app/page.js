@@ -282,25 +282,201 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ── Step visuals ── */}
         <section
           aria-label="How it works demonstrations"
           className="grid gap-5 sm:grid-cols-3"
         >
-          <div
-            role="img"
-            aria-label="Placeholder for a demonstration GIF"
-            className="aspect-square w-full rounded-2xl border border-[#405047] bg-[#18211e]"
-          />
-          <div
-            role="img"
-            aria-label="Placeholder for a demonstration GIF"
-            className="aspect-square w-full rounded-2xl border border-[#405047] bg-[#18211e]"
-          />
-          <div
-            role="img"
-            aria-label="Placeholder for a demonstration GIF"
-            className="aspect-square w-full rounded-2xl border border-[#405047] bg-[#18211e]"
-          />
+          {/* Step 1 visual */}
+          <div className="group aspect-square w-full rounded-2xl border border-[#405047] bg-[#18211e] p-6 flex flex-col justify-between overflow-hidden relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#c5f56b]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="text-[#c5f56b] text-4xl mb-4">📝</div>
+            <div className="space-y-3">
+              {["voice note transcript...", "half-finished idea...", "rough article draft..."].map((t, i) => (
+                <div key={i} className="rounded-lg border border-[#2d3934] bg-[#111816] px-3 py-2 text-xs text-[#718078] font-mono">
+                  {t}
+                </div>
+              ))}
+            </div>
+            <p className="mt-4 text-xs text-[#aeb9b0] font-medium">Your messy raw input</p>
+          </div>
+
+          {/* Step 2 visual */}
+          <div className="group aspect-square w-full rounded-2xl border border-[#405047] bg-[#18211e] p-6 flex flex-col justify-between overflow-hidden relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#c5f56b]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="text-[#c5f56b] text-4xl mb-4">⚙️</div>
+            <div className="space-y-2">
+              {["Professional", "Conversational", "Bold"].map((tone, i) => (
+                <div key={tone} className={`rounded-full px-3 py-1.5 text-xs font-semibold border ${
+                  i === 0
+                    ? "border-[#c5f56b] bg-[#293a30] text-[#c5f56b]"
+                    : "border-[#46544c] text-[#aeb9b0]"
+                }`}>
+                  {tone}
+                </div>
+              ))}
+              <div className="mt-3 h-1.5 w-full rounded-full bg-[#2d3934] overflow-hidden">
+                <div className="h-full w-3/4 rounded-full bg-gradient-to-r from-[#c5f56b] to-[#7fe0a8] transition-all duration-1000" />
+              </div>
+              <p className="text-[10px] text-[#718078]">AI rewriting in progress…</p>
+            </div>
+            <p className="mt-4 text-xs text-[#aeb9b0] font-medium">Pick your tone & style</p>
+          </div>
+
+          {/* Step 3 visual */}
+          <div className="group aspect-square w-full rounded-2xl border border-[#405047] bg-[#18211e] p-6 flex flex-col justify-between overflow-hidden relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#c5f56b]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="text-[#c5f56b] text-4xl mb-4">🚀</div>
+            <div className="space-y-2">
+              {[
+                { icon: "🐦", label: "X Thread", color: "#1da1f2" },
+                { icon: "💼", label: "LinkedIn Post", color: "#0a66c2" },
+                { icon: "📧", label: "Newsletter", color: "#c5f56b" },
+              ].map(({ icon, label, color }) => (
+                <div key={label} className="flex items-center gap-2 rounded-lg border border-[#2d3934] bg-[#111816] px-3 py-2">
+                  <span className="text-sm">{icon}</span>
+                  <span className="text-xs text-[#d3dbd2]">{label}</span>
+                  <span className="ml-auto text-[10px] font-semibold" style={{ color }}>Ready</span>
+                </div>
+              ))}
+            </div>
+            <p className="mt-4 text-xs text-[#aeb9b0] font-medium">Publish across every platform</p>
+          </div>
+        </section>
+
+        {/* ── About section ── */}
+        <section
+          id="about"
+          className="mt-24 lg:mt-32"
+          aria-labelledby="about-heading"
+        >
+          {/* Section header */}
+          <div className="border-t border-[#2d3934] pt-8 mb-16">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#c5f56b] mb-3">About Prismify</p>
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+              <h2
+                id="about-heading"
+                className="max-w-2xl text-4xl font-semibold leading-[1.05] tracking-[-0.045em] sm:text-5xl"
+              >
+                Built for thinkers who hate
+                <span className="block text-[#c5f56b]">staring at blank pages.</span>
+              </h2>
+              <p className="max-w-md text-base leading-7 text-[#89968d] lg:text-right">
+                Prismify was born from a simple frustration: great ideas die in the draft stage. We built the tool we wished existed.
+              </p>
+            </div>
+          </div>
+
+          {/* Stats row */}
+          <div className="grid grid-cols-2 gap-px bg-[#2d3934] rounded-2xl overflow-hidden sm:grid-cols-4 mb-12">
+            {[
+              { value: "3×", label: "Faster content creation" },
+              { value: "5+", label: "Output formats per idea" },
+              { value: "100%", label: "AI-native workflow" },
+              { value: "∞", label: "Ideas, never wasted" },
+            ].map(({ value, label }) => (
+              <div key={label} className="bg-[#18211e] p-6 text-center">
+                <p className="text-3xl font-black tracking-[-0.06em] text-[#c5f56b] sm:text-4xl">{value}</p>
+                <p className="mt-2 text-xs leading-5 text-[#718078]">{label}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Mission + pillars */}
+          <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
+            {/* Mission card */}
+            <div className="relative overflow-hidden rounded-3xl border border-[#34423b] bg-[#18211e] p-8 sm:p-10">
+              <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full bg-[#c5f56b]/6 blur-3xl" />
+              <div className="absolute -bottom-16 -left-8 h-40 w-40 rounded-full bg-[#7fe0a8]/5 blur-2xl" />
+              <p className="relative text-xs font-semibold uppercase tracking-[0.18em] text-[#718078] mb-6">Our mission</p>
+              <blockquote className="relative">
+                <p className="text-xl font-medium leading-8 text-[#f5f1e8] sm:text-2xl sm:leading-9">
+                  &ldquo;The best ideas deserve the best words. We remove the distance between what you know and what the world gets to read.&rdquo;
+                </p>
+              </blockquote>
+              <div className="mt-8 flex items-center gap-4 border-t border-[#2d3934] pt-6">
+                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#c5f56b] to-[#7fe0a8] flex items-center justify-center text-[#101514] font-black text-lg">P</div>
+                <div>
+                  <p className="text-sm font-semibold text-[#f5f1e8]">The Prismify Team</p>
+                  <p className="text-xs text-[#718078]">Building in public, shipping with purpose</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Pillars grid */}
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+              {[
+                {
+                  icon: "✦",
+                  title: "Idea-first design",
+                  body: "Every feature starts with the question: does this help the idea get out faster?",
+                },
+                {
+                  icon: "⚡",
+                  title: "Speed is the product",
+                  body: "From raw thought to ready-to-post content in under a minute. Always.",
+                },
+                {
+                  icon: "🎯",
+                  title: "Your voice, amplified",
+                  body: "Prismify doesn't replace your voice — it removes the friction of finding it.",
+                },
+                {
+                  icon: "🔒",
+                  title: "Private by default",
+                  body: "Your ideas are yours. We store only what you choose and never use your content for training.",
+                },
+              ].map(({ icon, title, body }) => (
+                <div
+                  key={title}
+                  className="group rounded-2xl border border-[#34423b] bg-[#111816] p-5 transition-all duration-300 hover:border-[#c5f56b]/40 hover:bg-[#18211e]"
+                >
+                  <span className="block text-xl mb-3 transition-transform duration-300 group-hover:scale-110 origin-left">{icon}</span>
+                  <h3 className="text-sm font-semibold text-[#f5f1e8] mb-2">{title}</h3>
+                  <p className="text-xs leading-5 text-[#718078]">{body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Technology strip */}
+          <div className="mt-5 rounded-3xl border border-[#34423b] bg-[#111816] p-8 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#718078] mb-2">Powered by</p>
+              <p className="text-lg font-semibold text-[#f5f1e8]">State-of-the-art AI, open infrastructure</p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              {[
+                { label: "Groq", sub: "Inference" },
+                { label: "Llama 3", sub: "Model" },
+                { label: "Next.js", sub: "Framework" },
+                { label: "MongoDB", sub: "Storage" },
+              ].map(({ label, sub }) => (
+                <div key={label} className="rounded-xl border border-[#2d3934] bg-[#18211e] px-4 py-2.5 text-center">
+                  <p className="text-xs font-bold text-[#f5f1e8]">{label}</p>
+                  <p className="text-[10px] text-[#718078]">{sub}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* CTA banner */}
+          <div className="mt-5 relative overflow-hidden rounded-3xl bg-[#c5f56b] p-8 sm:p-10 text-[#101514]">
+            <div className="absolute -right-8 -top-8 h-40 w-40 rounded-full bg-white/15 blur-2xl" />
+            <div className="absolute bottom-0 left-1/3 h-32 w-64 rounded-full bg-[#7fe0a8]/30 blur-3xl" />
+            <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-xl font-black tracking-[-0.04em] sm:text-2xl">Ready to transform your ideas?</p>
+                <p className="mt-1 text-sm text-[#101514]/70">Join creators who already ship more, with less effort.</p>
+              </div>
+              <Link
+                href="/workspace"
+                className="shrink-0 inline-flex items-center justify-center rounded-full bg-[#101514] px-7 py-3.5 text-sm font-bold text-[#c5f56b] transition hover:bg-[#1a2820] hover:scale-105"
+              >
+                Start creating free →
+              </Link>
+            </div>
+          </div>
         </section>
       </main>
     </div>

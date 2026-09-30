@@ -83,7 +83,7 @@ const Navbar = () => {
           </span>
         </Link>
         <Link
-          href="/#how-it-works"
+          href="/#about"
           className="group relative h-5 overflow-hidden text-[#aeb9b0] transition hover:text-[#c5f56b]"
         >
           <span className="block whitespace-nowrap transition-transform duration-300 group-hover:-translate-y-full">
@@ -232,7 +232,7 @@ const Navbar = () => {
         </Link>
         <Link
           className="rounded-xl px-4 py-3 text-[#aeb9b0] hover:bg-[#1d2a24] hover:text-[#c5f56b]"
-          href="/#how-it-works"
+          href="/#about"
           onClick={() => setMobileMenuOpen(false)}
         >
           About
