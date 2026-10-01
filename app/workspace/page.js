@@ -156,20 +156,7 @@ export default function WorkspacePage() {
             </h1>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 text-xs text-[#aeb9b0]">
-            <span className="rounded-full border border-[#41504a] bg-[#15201d] px-3 py-1.5">
-              {selectedTone}
-            </span>
-            <span className="rounded-full border border-[#41504a] bg-[#15201d] px-3 py-1.5">
-              {rawInput.trim() ? `${inputMeta.wordCount} words` : "Draft mode"}
-            </span>
-            <span className="rounded-full border border-[#41504a] bg-[#15201d] px-3 py-1.5">
-              {rawInput.trim() ? `${inputMeta.readTime} min read` : "Ready"}
-            </span>
-            <span className="rounded-full border border-[#41504a] bg-[#15201d] px-3 py-1.5">
-              {savedCount} saved
-            </span>
-          </div>
+
         </header>
 
         <section className="grid gap-5 lg:grid-cols-[0.82fr_1.18fr]">
