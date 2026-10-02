@@ -83,22 +83,23 @@ export default function Home() {
       <main className="relative mx-auto max-w-7xl px-5 pb-16 pt-32 sm:px-8 lg:px-12 lg:pb-24 lg:pt-40">
         <section className="grid items-center gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
           <div className="max-w-xl">
-            <h1 className="max-w-2xl text-5xl font-semibold leading-[0.98] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
+            <h1 className="hero-text max-w-2xl text-5xl font-semibold leading-[0.98] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
               Your raw thoughts,
               <span className="block text-[#c5f56b]">made remarkable.</span>
             </h1>
 
-            <p className="mt-7 max-w-lg text-base leading-7 text-[#aeb9b0] sm:text-lg">
+            <p className="hero-text mt-7 max-w-lg text-base leading-7 text-[#aeb9b0] sm:text-lg">
               Prismify turns brain dumps, transcripts, and rough ideas into
               polished content for every place your audience spends time.
             </p>
 
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+            <div className="hero-text mt-9 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/workspace"
-                className="inline-flex items-center justify-center rounded-full bg-[#c5f56b] px-6 py-3.5 text-sm font-bold text-[#101514] transition hover:bg-white"
+                className="group inline-flex items-center justify-center gap-2 rounded-full bg-[#c5f56b] px-6 py-3.5 text-sm font-bold text-[#101514] transition hover:bg-white"
               >
                 Start creating
+                <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" viewBox="0 0 16 16" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
               </Link>
 
               <a
@@ -109,10 +110,19 @@ export default function Home() {
               </a>
             </div>
 
-            <div className="mt-12 flex flex-wrap items-center gap-x-7 gap-y-3 border-t border-[#2d3934] pt-5 text-xs uppercase tracking-[0.14em] text-[#718078]">
-              <span>One idea</span>
-              <span className="text-[#c5f56b]">+</span>
-              <span>Three ready-to-share formats</span>
+            <div className="hero-text mt-12 flex flex-wrap items-center gap-x-7 gap-y-3 border-t border-[#2d3934] pt-5">
+              <div className="flex items-center gap-2">
+                <div className="flex -space-x-1.5">
+                  {["#c5f56b","#7fe0a8","#a8d4ff"].map((c) => (
+                    <span key={c} className="flex h-6 w-6 items-center justify-center rounded-full border border-[#2d3934] text-[9px] font-black" style={{ background: c, color: "#101514" }}>✦</span>
+                  ))}
+                </div>
+                <span className="text-xs text-[#718078]">Trusted by creators</span>
+              </div>
+              <span className="h-3 w-px bg-[#2d3934]" />
+              <span className="text-xs uppercase tracking-[0.14em] text-[#718078]">One idea</span>
+              <span className="text-[#c5f56b] text-xs">+</span>
+              <span className="text-xs uppercase tracking-[0.14em] text-[#718078]">Three ready-to-share formats</span>
             </div>
           </div>
 
@@ -178,7 +188,7 @@ export default function Home() {
                   <button
                     type="button"
                     onClick={() => setGenerated(true)}
-                    className="mt-5 w-full rounded-lg bg-[#c5f56b] px-4 py-3 text-sm font-bold text-[#101514] transition hover:bg-white"
+                    className="btn-generate mt-5 w-full rounded-lg bg-[#c5f56b] px-4 py-3 text-sm font-bold text-[#101514] transition hover:bg-white"
                   >
                     Generate content
                   </button>
@@ -425,8 +435,8 @@ export default function Home() {
               { value: "100%", label: "AI-native workflow" },
               { value: "∞", label: "Ideas, never wasted" },
             ].map(({ value, label }) => (
-              <div key={label} className="bg-[#18211e] p-6 text-center">
-                <p className="text-3xl font-black tracking-[-0.06em] text-[#c5f56b] sm:text-4xl">{value}</p>
+              <div key={label} className="bg-[#18211e] p-6 text-center group hover:bg-[#1d2922] transition-colors duration-300">
+                <p className="stat-value text-3xl font-black tracking-[-0.06em] text-[#c5f56b] sm:text-4xl group-hover:scale-105 transition-transform duration-300 inline-block">{value}</p>
                 <p className="mt-2 text-xs leading-5 text-[#718078]">{label}</p>
               </div>
             ))}
@@ -479,7 +489,7 @@ export default function Home() {
               ].map(({ icon, title, body }) => (
                 <div
                   key={title}
-                  className="group rounded-2xl border border-[#34423b] bg-[#111816] p-5 transition-all duration-300 hover:border-[#c5f56b]/40 hover:bg-[#18211e]"
+                  className="pillar-card group rounded-2xl border border-[#34423b] bg-[#111816] p-5"
                 >
                   <span className="block text-xl mb-3 transition-transform duration-300 group-hover:scale-110 origin-left">{icon}</span>
                   <h3 className="text-sm font-semibold text-[#f5f1e8] mb-2">{title}</h3>
@@ -502,7 +512,7 @@ export default function Home() {
                 { label: "Next.js", sub: "Framework" },
                 { label: "MongoDB", sub: "Storage" },
               ].map(({ label, sub }) => (
-                <div key={label} className="rounded-xl border border-[#2d3934] bg-[#18211e] px-4 py-2.5 text-center">
+                <div key={label} className="tech-badge rounded-xl border border-[#2d3934] bg-[#18211e] px-4 py-2.5 text-center">
                   <p className="text-xs font-bold text-[#f5f1e8]">{label}</p>
                   <p className="text-[10px] text-[#718078]">{sub}</p>
                 </div>
@@ -511,19 +521,24 @@ export default function Home() {
           </div>
 
           {/* CTA banner */}
-          <div className="mt-5 relative overflow-hidden rounded-3xl bg-[#c5f56b] p-8 sm:p-10 text-[#101514]">
-            <div className="absolute -right-8 -top-8 h-40 w-40 rounded-full bg-white/15 blur-2xl" />
-            <div className="absolute bottom-0 left-1/3 h-32 w-64 rounded-full bg-[#7fe0a8]/30 blur-3xl" />
-            <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-5 relative overflow-hidden rounded-3xl bg-[#c5f56b] p-8 sm:p-12 text-[#101514]">
+            {/* layered decorative orbs */}
+            <div className="absolute -right-10 -top-10 h-48 w-48 rounded-full bg-white/20 blur-2xl" />
+            <div className="absolute bottom-0 left-1/4 h-40 w-72 rounded-full bg-[#7fe0a8]/35 blur-3xl" />
+            <div className="absolute -left-6 top-1/2 -translate-y-1/2 h-32 w-32 rounded-full bg-[#c5f56b]/60 blur-2xl" />
+            <div className="relative flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-xl font-black tracking-[-0.04em] sm:text-2xl">Ready to transform your ideas?</p>
-                <p className="mt-1 text-sm text-[#101514]/70">Join creators who already ship more, with less effort.</p>
+                <p className="text-2xl font-black tracking-[-0.045em] sm:text-3xl leading-tight">
+                  Ready to transform<br className="hidden sm:block" /> your ideas?
+                </p>
+                <p className="mt-2 text-sm font-medium text-[#101514]/65">Join creators who already ship more, with less effort.</p>
               </div>
               <Link
                 href="/workspace"
-                className="shrink-0 inline-flex items-center justify-center rounded-full bg-[#101514] px-7 py-3.5 text-sm font-bold text-[#c5f56b] transition hover:bg-[#1a2820] hover:scale-105"
+                className="group shrink-0 inline-flex items-center justify-center gap-2.5 rounded-full bg-[#101514] px-8 py-4 text-sm font-bold text-[#c5f56b] transition hover:bg-[#1a2820] hover:scale-105 hover:shadow-xl hover:shadow-black/20"
               >
-                Start creating free →
+                Start creating free
+                <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" viewBox="0 0 16 16" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
               </Link>
             </div>
           </div>

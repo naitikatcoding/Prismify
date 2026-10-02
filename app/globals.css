@@ -160,3 +160,99 @@ body {
 .row-item:nth-child(1) { animation-delay: 500ms; }
 .row-item:nth-child(2) { animation-delay: 640ms; }
 .row-item:nth-child(3) { animation-delay: 780ms; }
+
+/* ── Hero section staggered entrance ── */
+.hero-text {
+  animation: hero-fade 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.hero-text:nth-child(1) { animation-delay: 0ms; }
+.hero-text:nth-child(2) { animation-delay: 120ms; }
+.hero-text:nth-child(3) { animation-delay: 220ms; }
+.hero-text:nth-child(4) { animation-delay: 320ms; }
+
+@keyframes hero-fade {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Stat counter pop ── */
+.stat-value {
+  animation: stat-pop 500ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.stat-value:nth-child(1) { animation-delay: 100ms; }
+.stat-value:nth-child(2) { animation-delay: 200ms; }
+.stat-value:nth-child(3) { animation-delay: 300ms; }
+.stat-value:nth-child(4) { animation-delay: 400ms; }
+
+@keyframes stat-pop {
+  from { opacity: 0; transform: scale(0.7); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── Generate button pulse ring ── */
+.btn-generate {
+  position: relative;
+  overflow: hidden;
+}
+.btn-generate::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 0 rgba(197, 245, 107, 0.45);
+  animation: ring-pulse 2.5s ease-out infinite;
+}
+
+@keyframes ring-pulse {
+  0%   { box-shadow: 0 0 0 0   rgba(197, 245, 107, 0.45); }
+  60%  { box-shadow: 0 0 0 10px rgba(197, 245, 107, 0); }
+  100% { box-shadow: 0 0 0 0   rgba(197, 245, 107, 0); }
+}
+
+/* ── Footer link underline grow ── */
+.footer-link {
+  position: relative;
+  display: inline-block;
+}
+.footer-link::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: #c5f56b;
+  transition: width 260ms ease;
+}
+.footer-link:hover::after {
+  width: 100%;
+}
+
+/* ── Pillar card accent line ── */
+.pillar-card {
+  border-left: 2px solid transparent;
+  transition: border-color 300ms ease, background 300ms ease, box-shadow 300ms ease;
+}
+.pillar-card:hover {
+  border-left-color: rgba(197, 245, 107, 0.5);
+  background: #18211e;
+  box-shadow: 0 0 24px -6px rgba(197, 245, 107, 0.08);
+}
+
+/* ── CTA banner text shimmer ── */
+.cta-headline {
+  background: linear-gradient(90deg, #101514 0%, #1a3020 50%, #101514 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* ── Tech badge hover lift ── */
+.tech-badge {
+  transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+}
+.tech-badge:hover {
+  transform: translateY(-2px);
+  border-color: rgba(197, 245, 107, 0.25);
+  box-shadow: 0 4px 16px -4px rgba(197, 245, 107, 0.12);
+}
