@@ -40,7 +40,7 @@ export async function POST(request) {
   const apiKey = (process.env.GROQ_API_KEY || "").trim();
   if (!apiKey) {
     return NextResponse.json(
-      { error: "GROQ_API_KEY is not configured on the server." },
+      { error: "AI service is not configured on the server." },
       { status: 500 }
     );
   }
@@ -84,7 +84,7 @@ Do not include any conversational filler outside the JSON.`,
 
     const aiResponseRaw = chatCompletion.choices[0]?.message?.content;
     if (!aiResponseRaw) {
-      throw new Error("No response received from Groq AI.");
+      throw new Error("No response received from AI engine.");
     }
 
     let formattedOutputs;

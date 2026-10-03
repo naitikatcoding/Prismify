@@ -142,7 +142,7 @@ export default function Home() {
                 </div>
 
                 <span className="rounded-full border border-[#53614f] px-3 py-1.5 text-xs text-[#c5f56b]">
-                  Llama 3
+                  AI Engine
                 </span>
               </div>
 
@@ -499,29 +499,8 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Technology strip */}
-          <div className="mt-5 rounded-3xl border border-[#34423b] bg-[#111816] p-8 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#718078] mb-2">Powered by</p>
-              <p className="text-lg font-semibold text-[#f5f1e8]">State-of-the-art AI, open infrastructure</p>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              {[
-                { label: "Groq", sub: "Inference" },
-                { label: "Llama 3", sub: "Model" },
-                { label: "Next.js", sub: "Framework" },
-                { label: "MongoDB", sub: "Storage" },
-              ].map(({ label, sub }) => (
-                <div key={label} className="tech-badge rounded-xl border border-[#2d3934] bg-[#18211e] px-4 py-2.5 text-center">
-                  <p className="text-xs font-bold text-[#f5f1e8]">{label}</p>
-                  <p className="text-[10px] text-[#718078]">{sub}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* CTA banner */}
-          <div className="mt-5 relative overflow-hidden rounded-3xl bg-[#c5f56b] p-8 sm:p-12 text-[#101514]">
+          <div className="mt-6 sm:mt-8 relative overflow-hidden rounded-3xl bg-[#c5f56b] p-8 sm:p-12 text-[#101514]">
             {/* layered decorative orbs */}
             <div className="absolute -right-10 -top-10 h-48 w-48 rounded-full bg-white/20 blur-2xl" />
             <div className="absolute bottom-0 left-1/4 h-40 w-72 rounded-full bg-[#7fe0a8]/35 blur-3xl" />

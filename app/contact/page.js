@@ -217,7 +217,7 @@ export default function ContactPage() {
                   <p className="mt-2 max-w-sm text-sm text-[#8a9990] leading-relaxed">
                     {submitResult?.emailDelivered
                       ? `Your feedback was routed straight to ${developerEmail}. Thank you — I read every one.`
-                      : "Your message has been saved in the database."}
+                      : "Your message has been received successfully."}
                   </p>
 
                   {submitResult?.needsActivation && (
@@ -537,7 +537,7 @@ export default function ContactPage() {
               {[
                 { icon: Clock, label: "Response", value: "24–48h", color: "#c5f56b" },
                 { icon: Zap, label: "Direct", value: "Inbox", color: "#60d9fa" },
-                { icon: Globe, label: "Built", value: "Next.js", color: "#d4a8ff" },
+                { icon: Globe, label: "Availability", value: "24/7", color: "#d4a8ff" },
               ].map(({ icon: Icon, label, value, color }) => (
                 <div
                   key={label}

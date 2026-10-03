@@ -228,7 +228,7 @@ export default function WorkspacePage() {
               )}
             </button>
             <p className="mt-3 text-center text-xs text-[#718078]" aria-live="polite">
-              {saveStatus === "saving" && "Generating variants with Groq AI..."}
+              {saveStatus === "saving" && "Generating variants with AI..."}
               {saveStatus === "saved" && "✨ Generated & saved to your studio"}
               {saveStatus === "error" && (
                 <span className="text-red-400">{errorMessage || "Could not generate content"}</span>
