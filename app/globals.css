@@ -256,3 +256,19 @@ body {
   border-color: rgba(197, 245, 107, 0.25);
   box-shadow: 0 4px 16px -4px rgba(197, 245, 107, 0.12);
 }
+
+/* ── Soundwave animation for voice note preview ── */
+@keyframes wave-bar {
+  0%, 100% {
+    transform: scaleY(0.4);
+    opacity: 0.65;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+.animate-wave {
+  animation: wave-bar 1.2s ease-in-out infinite;
+  transform-origin: bottom;
+}

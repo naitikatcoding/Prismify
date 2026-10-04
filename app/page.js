@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import HowItWorks from "@/components/HowItWorks";
 
 const rawIdea =
   "Building in public taught me that consistency beats perfect timing. Here's what changed when I started sharing the process...";
@@ -253,156 +254,9 @@ export default function Home() {
           </div>
         </section>
 
-        <section
-          id="how-it-works"
-          className="mt-24 border-t border-[#2d3934] pt-10 lg:mt-32"
-        >
-          {/* Section label */}
-          <p className="mb-8 text-xs font-semibold uppercase tracking-[0.2em] text-[#c5f56b]">
-            How it works
-          </p>
+        {/* ── How It Works section ── */}
+        <HowItWorks />
 
-          {/* Step headers with connector lines */}
-          <div className="grid gap-8 sm:grid-cols-3 sm:gap-5">
-            {[
-              { n: "01", title: "Drop in the messy version.", body: "Paste a transcript, article, voice note, or the idea that\u2019s still finding its shape." },
-              { n: "02", title: "Choose your point of view.", body: "Set the tone, audience, and energy. Prismify handles the rewriting work." },
-              { n: "03", title: "Publish everywhere.", body: "Get a social thread, LinkedIn post, and newsletter ready to review and share." },
-            ].map(({ n, title, body }) => (
-              <div key={n} className="relative">
-                {/* connector line (hidden on mobile, CSS handles sm+) */}
-                {n !== "03" && <span className="step-connector" aria-hidden="true" />}
-                <div className="mb-4 flex items-center gap-3">
-                  <span className="num-badge flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#1e2e27] text-xs font-black text-[#c5f56b] ring-1 ring-[#c5f56b]/30">
-                    {n}
-                  </span>
-                  <span className="h-px flex-1 bg-[#2d3934] sm:hidden" />
-                </div>
-                <h2 className="text-lg font-semibold leading-snug text-[#f5f1e8]">{title}</h2>
-                <p className="mt-2.5 max-w-xs text-sm leading-6 text-[#89968d]">{body}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ── Step visuals ── */}
-        <section
-          aria-label="How it works demonstrations"
-          className="mt-5 grid gap-5 sm:grid-cols-3"
-        >
-          {/* Step 1 — Drop in */}
-          <div className="step-card step-card-glow group relative flex aspect-square w-full flex-col overflow-hidden rounded-2xl border border-[#405047] bg-[#18211e] p-6">
-            {/* corner glow */}
-            <div className="pointer-events-none absolute -left-6 -top-6 h-24 w-24 rounded-full bg-[#c5f56b]/8 blur-2xl transition-opacity duration-500 group-hover:opacity-100 opacity-0" />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#c5f56b]/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-
-            {/* header */}
-            <div className="relative mb-4 flex items-center justify-between">
-              <span className="text-2xl leading-none">📝</span>
-              <span className="rounded-full bg-[#1a2820] px-2 py-0.5 text-[10px] font-bold text-[#c5f56b] ring-1 ring-[#c5f56b]/20">Step 01</span>
-            </div>
-
-            {/* rows */}
-            <div className="relative flex flex-1 flex-col justify-center gap-2.5">
-              {[
-                { label: "voice note transcript", chars: "1,204" },
-                { label: "half-finished idea",    chars: "432" },
-                { label: "rough article draft",   chars: "3,891" },
-              ].map(({ label, chars }, i) => (
-                <div
-                  key={i}
-                  className="row-item flex items-center gap-2 rounded-lg border border-[#2d3934] bg-[#111816] px-3 py-2"
-                >
-                  <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${i === 0 ? "bg-[#c5f56b]" : "bg-[#34423b]"}`} />
-                  <span className={`flex-1 truncate font-mono text-xs ${i === 0 ? "cursor-blink text-[#d3dbd2]" : "text-[#4a5c52]"}`}>
-                    {label}
-                  </span>
-                  <span className="shrink-0 text-[10px] text-[#3a4e44]">{chars}</span>
-                </div>
-              ))}
-            </div>
-
-            <p className="relative mt-5 text-xs font-semibold tracking-wide text-[#aeb9b0]">Your messy raw input</p>
-          </div>
-
-          {/* Step 2 — Choose tone */}
-          <div className="step-card step-card-glow group relative flex aspect-square w-full flex-col overflow-hidden rounded-2xl border border-[#405047] bg-[#18211e] p-6">
-            <div className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-[#c5f56b]/8 blur-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#c5f56b]/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-
-            <div className="relative mb-4 flex items-center justify-between">
-              <span className="text-2xl leading-none">⚙️</span>
-              <span className="rounded-full bg-[#1a2820] px-2 py-0.5 text-[10px] font-bold text-[#c5f56b] ring-1 ring-[#c5f56b]/20">Step 02</span>
-            </div>
-
-            <div className="relative flex flex-1 flex-col justify-center gap-2">
-              {/* tone pills */}
-              {["Professional", "Conversational", "Bold"].map((tone, i) => (
-                <div
-                  key={tone}
-                  className={`flex items-center gap-2.5 rounded-full px-3.5 py-2 text-xs font-semibold border transition-all duration-300 ${
-                    i === 0
-                      ? "border-[#c5f56b] bg-[#1e3028] text-[#c5f56b] shadow-[0_0_12px_rgba(197,245,107,0.12)]"
-                      : "border-[#2d3934] text-[#4a5c52]"
-                  }`}
-                >
-                  <span className={`h-1.5 w-1.5 rounded-full ${i === 0 ? "bg-[#c5f56b]" : "bg-[#2d3934]"}`} />
-                  {tone}
-                  {i === 0 && <span className="ml-auto text-[10px] text-[#7ab845]">Active</span>}
-                </div>
-              ))}
-
-              {/* shimmer progress */}
-              <div className="mt-3 space-y-1.5">
-                <div className="flex justify-between text-[10px] text-[#4a5c52]">
-                  <span>AI rewriting</span>
-                  <span className="text-[#7ab845]">74%</span>
-                </div>
-                <div className="h-1.5 w-full overflow-hidden rounded-full bg-[#1e2b24]">
-                  <div className="progress-shimmer h-full w-[74%] rounded-full" />
-                </div>
-              </div>
-            </div>
-
-            <p className="relative mt-5 text-xs font-semibold tracking-wide text-[#aeb9b0]">Pick your tone &amp; style</p>
-          </div>
-
-          {/* Step 3 — Publish */}
-          <div className="step-card step-card-glow group relative flex aspect-square w-full flex-col overflow-hidden rounded-2xl border border-[#405047] bg-[#18211e] p-6">
-            <div className="pointer-events-none absolute -bottom-6 -right-6 h-24 w-24 rounded-full bg-[#c5f56b]/8 blur-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#c5f56b]/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-
-            <div className="relative mb-4 flex items-center justify-between">
-              <span className="text-2xl leading-none">🚀</span>
-              <span className="rounded-full bg-[#1a2820] px-2 py-0.5 text-[10px] font-bold text-[#c5f56b] ring-1 ring-[#c5f56b]/20">Step 03</span>
-            </div>
-
-            <div className="relative flex flex-1 flex-col justify-center gap-2.5">
-              {[
-                { icon: "𝕏",  label: "X Thread",      sub: "5 posts",    color: "#e0e0e0" },
-                { icon: "in", label: "LinkedIn Post",  sub: "146 words",  color: "#4b9eff" },
-                { icon: "✉",  label: "Newsletter",    sub: "312 words",  color: "#c5f56b" },
-              ].map(({ icon, label, sub, color }) => (
-                <div
-                  key={label}
-                  className="row-item flex items-center gap-2.5 rounded-xl border border-[#2d3934] bg-[#111816] px-3 py-2.5 transition-all duration-300 group-hover:border-[#34423b]"
-                >
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-[#1e2b24] text-[11px] font-black" style={{ color }}>{icon}</span>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-xs font-medium text-[#c8d5ce]">{label}</p>
-                    <p className="text-[10px] text-[#4a5c52]">{sub}</p>
-                  </div>
-                  <div className="flex shrink-0 items-center gap-1.5">
-                    <span className="ready-dot" />
-                    <span className="text-[10px] font-bold text-[#7ab845]">Ready</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <p className="relative mt-5 text-xs font-semibold tracking-wide text-[#aeb9b0]">Publish across every platform</p>
-          </div>
-        </section>
 
         {/* ── About section ── */}
         <section
