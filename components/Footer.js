@@ -48,11 +48,11 @@ const Footer = () => {
             className="group inline-flex w-fit items-center gap-3 rounded-full bg-[#c5f56b] px-5 py-3.5 text-sm font-bold text-[#101514] transition hover:bg-white hover:scale-105"
           >
             {session ? "Open your studio" : "Start creating"}
-            <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" viewBox="0 0 16 16" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" viewBox="0 0 16 16" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8h10M9 4l4 4-4 4" /></svg>
           </Link>
         </div>
 
-          <div className="grid gap-10 py-12 sm:grid-cols-3 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+        <div className="grid gap-10 py-12 sm:grid-cols-3 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
             <p className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-[#c5f56b]">
               The Prismify principle
@@ -104,6 +104,9 @@ const Footer = () => {
               </a>
               <a className="footer-link transition hover:text-[#c5f56b]" href="https://x.com/NGupta20845" target="blank" rel="noreferrer">
                 X / Twitter
+              </a>
+              <a className="footer-link transition hover:text-[#c5f56b]" href="https://github.com/naitikatcoding" target="blank" rel="noreferrer">
+                Github
               </a>
             </nav>
           </div>
