@@ -21,7 +21,8 @@ export async function POST(req) {
     const cleanEmail = (email && email.trim()) || "Not provided";
     const cleanSubject = (subject && subject.trim()) || `Feedback: ${category || "General"}`;
     const cleanCategory = category || "General Feedback";
-    const cleanRating = Number(rating) || 5;
+    const numRating = Number(rating);
+    const cleanRating = numRating >= 1 && numRating <= 5 ? numRating : null;
     const cleanMessage = message.trim();
 
     // 1. Always persist to MongoDB so feedback is securely recorded
@@ -81,7 +82,9 @@ export async function POST(req) {
           },
         });
 
-        const ratingStars = "⭐".repeat(Math.max(1, Math.min(5, cleanRating)));
+        const ratingDisplay = cleanRating
+          ? `${"⭐".repeat(cleanRating)} (${cleanRating}/5)`
+          : "Not rated";
 
         const htmlEmail = `
           <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #101514; color: #f5f1e8; padding: 32px 20px; border-radius: 12px; max-width: 600px; margin: 0 auto; border: 1px solid #2d3934;">
@@ -98,7 +101,7 @@ export async function POST(req) {
                 </tr>
                 <tr>
                   <td style="padding: 6px 0; color: #718078; font-weight: 600;">Rating:</td>
-                  <td style="padding: 6px 0; color: #f5f1e8;">${ratingStars} (${cleanRating}/5)</td>
+                  <td style="padding: 6px 0; color: #f5f1e8;">${ratingDisplay}</td>
                 </tr>
                 <tr>
                   <td style="padding: 6px 0; color: #718078; font-weight: 600;">From:</td>
@@ -137,7 +140,7 @@ export async function POST(req) {
           replyTo: cleanEmail !== "Not provided" ? cleanEmail : undefined,
           to: RECIPIENT_EMAIL,
           subject: `[Prismify Feedback] ${cleanCategory}: ${cleanSubject}`,
-          text: `From: ${cleanName} (${cleanEmail})\nCategory: ${cleanCategory}\nRating: ${cleanRating}/5\nSubject: ${cleanSubject}\n\nMessage:\n${cleanMessage}`,
+          text: `From: ${cleanName} (${cleanEmail})\nCategory: ${cleanCategory}\nRating: ${cleanRating ? `${cleanRating}/5` : "Not rated"}\nSubject: ${cleanSubject}\n\nMessage:\n${cleanMessage}`,
           html: htmlEmail,
         });
 
@@ -167,7 +170,7 @@ export async function POST(req) {
               Name: cleanName,
               Email: cleanEmail,
               Category: cleanCategory,
-              Rating: `${cleanRating} / 5`,
+              Rating: cleanRating ? `${cleanRating} / 5` : "Not rated",
               Subject: cleanSubject,
               Message: cleanMessage,
               _template: "table",
@@ -200,7 +203,7 @@ export async function POST(req) {
 
     // 4. Construct direct client links for instant compose
     const mailSubject = `[Prismify Feedback] ${cleanCategory}: ${cleanSubject}`;
-    const mailBody = `Hello Naitik,\n\nHere is feedback from Prismify:\n\nName: ${cleanName}\nEmail: ${cleanEmail}\nCategory: ${cleanCategory}\nRating: ${cleanRating}/5\n\nMessage:\n${cleanMessage}\n`;
+    const mailBody = `Hello Naitik,\n\nHere is feedback from Prismify:\n\nName: ${cleanName}\nEmail: ${cleanEmail}\nCategory: ${cleanCategory}\nRating: ${cleanRating ? `${cleanRating}/5` : "Not rated"}\n\nMessage:\n${cleanMessage}\n`;
 
     const encodedSubject = encodeURIComponent(mailSubject);
     const encodedBody = encodeURIComponent(mailBody);

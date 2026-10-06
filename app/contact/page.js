@@ -48,7 +48,7 @@ export default function ContactPage() {
   const [category, setCategory] = useState("General Feedback");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
-  const [rating, setRating] = useState(5);
+  const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -95,7 +95,7 @@ export default function ContactPage() {
           email: email.trim() || (session?.user?.email ?? ""),
           subject: subject.trim() || `${category} on Prismify`,
           category,
-          rating,
+          rating: rating > 0 ? rating : null,
           message: message.trim(),
         }),
       });
@@ -113,7 +113,7 @@ export default function ContactPage() {
   const handleResetForm = () => {
     setMessage("");
     setSubject("");
-    setRating(5);
+    setRating(0);
     setSubmitSuccess(false);
     setSubmitResult(null);
     setErrorMessage("");
@@ -360,8 +360,8 @@ export default function ContactPage() {
                       <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#516059]">
                         Experience Rating
                       </label>
-                      <span className="text-xs font-mono text-[#c5f56b]">
-                        {hoveredRating || rating} / 5
+                      <span className={`text-xs font-mono transition-colors ${hoveredRating || rating ? "text-[#c5f56b]" : "text-[#718078]"}`}>
+                        {hoveredRating || rating ? `${hoveredRating || rating} / 5` : "Tap to rate"}
                       </span>
                     </div>
                     <div className="flex items-center gap-1">
@@ -371,7 +371,7 @@ export default function ContactPage() {
                           <button
                             key={star}
                             type="button"
-                            onClick={() => setRating(star)}
+                            onClick={() => setRating((prev) => (prev === star ? 0 : star))}
                             onMouseEnter={() => setHoveredRating(star)}
                             onMouseLeave={() => setHoveredRating(0)}
                             className="p-1.5 rounded-lg transition-transform duration-100 hover:scale-110 focus:outline-none"
