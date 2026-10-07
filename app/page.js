@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HowItWorks from "@/components/HowItWorks";
 
 const rawIdea =
@@ -61,6 +61,20 @@ export default function Home() {
   const [generated, setGenerated] = useState(true);
   const [copied, setCopied] = useState(false);
 
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.location.hash) {
+      const id = window.location.hash.replace("#", "");
+      const element = document.getElementById(id);
+      if (element) {
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            element.scrollIntoView({ behavior: "smooth" });
+          }, 80);
+        });
+      }
+    }
+  }, []);
+
   const platform = platforms[activePlatform];
   const currentOutput = platform.output[activeTone];
 
@@ -105,6 +119,13 @@ export default function Home() {
 
               <a
                 href="#how-it-works"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" });
+                  if (window.location.hash !== "#how-it-works") {
+                    window.history.pushState(null, "", "#how-it-works");
+                  }
+                }}
                 className="inline-flex items-center justify-center rounded-full border border-[#41504a] px-6 py-3.5 text-sm font-semibold text-[#f5f1e8] transition hover:border-[#c5f56b] hover:text-[#c5f56b]"
               >
                 See how it works
@@ -261,7 +282,7 @@ export default function Home() {
         {/* ── About section ── */}
         <section
           id="about"
-          className="mt-24 lg:mt-32"
+          className="scroll-mt-12 mt-24 lg:mt-32"
           aria-labelledby="about-heading"
         >
           {/* Section header */}

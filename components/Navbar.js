@@ -3,10 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import logo from "../public/logo.svg";
 
 const Navbar = () => {
+  const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const [imgError, setImgError] = useState(false);
@@ -18,6 +20,29 @@ const Navbar = () => {
   const avatarLabel = session?.user?.name || session?.user?.email || "Account";
   const avatarInitial = avatarLabel.charAt(0).toUpperCase();
   const avatarUrl = session?.user?.image;
+
+  const handleAnchorClick = (e, targetId) => {
+    if (pathname === "/") {
+      e.preventDefault();
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+        if (window.location.hash !== `#${targetId}`) {
+          window.history.pushState(null, "", `/#${targetId}`);
+        }
+      }
+    }
+  };
+
+  const handleHomeClick = (e) => {
+    if (pathname === "/") {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      if (window.location.hash) {
+        window.history.pushState(null, "", "/");
+      }
+    }
+  };
 
   // Reset image error state whenever avatar URL changes
   useEffect(() => {
@@ -45,7 +70,12 @@ const Navbar = () => {
 
   return (
     <nav className="relative z-50 mx-auto mt-4 flex w-[calc(50%-1rem)] max-w-5xl items-center rounded-full border border-[#34433b] bg-[#131c19]/90 px-4 py-2.5 text-sm text-[#f5f1e8] shadow-lg shadow-black/10 backdrop-blur-md sm:w-[calc(100%-2rem)] sm:px-5">
-      <Link href="/" className="group flex items-center gap-3" aria-label="Prismify home">
+      <Link
+        href="/"
+        onClick={handleHomeClick}
+        className="group flex items-center gap-3"
+        aria-label="Prismify home"
+      >
         <Image
           width={40}
           height={40}
@@ -73,6 +103,7 @@ const Navbar = () => {
         </Link>
         <Link
           href="/#how-it-works"
+          onClick={(e) => handleAnchorClick(e, "how-it-works")}
           className="group relative h-5 overflow-hidden text-[#aeb9b0] transition hover:text-[#c5f56b]"
         >
           <span className="block whitespace-nowrap transition-transform duration-300 group-hover:-translate-y-full">
@@ -84,6 +115,7 @@ const Navbar = () => {
         </Link>
         <Link
           href="/#about"
+          onClick={(e) => handleAnchorClick(e, "about")}
           className="group relative h-5 overflow-hidden text-[#aeb9b0] transition hover:text-[#c5f56b]"
         >
           <span className="block whitespace-nowrap transition-transform duration-300 group-hover:-translate-y-full">
@@ -226,14 +258,20 @@ const Navbar = () => {
         <Link
           className="rounded-xl px-4 py-3 text-[#aeb9b0] hover:bg-[#1d2a24] hover:text-[#c5f56b]"
           href="/#how-it-works"
-          onClick={() => setMobileMenuOpen(false)}
+          onClick={(e) => {
+            setMobileMenuOpen(false);
+            handleAnchorClick(e, "how-it-works");
+          }}
         >
           How it works
         </Link>
         <Link
           className="rounded-xl px-4 py-3 text-[#aeb9b0] hover:bg-[#1d2a24] hover:text-[#c5f56b]"
           href="/#about"
-          onClick={() => setMobileMenuOpen(false)}
+          onClick={(e) => {
+            setMobileMenuOpen(false);
+            handleAnchorClick(e, "about");
+          }}
         >
           About
         </Link>

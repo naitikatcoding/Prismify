@@ -3,10 +3,12 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { getSession } from "next-auth/react";
 import logo from "../public/logo.svg";
 
 const Footer = () => {
+  const pathname = usePathname();
   const [session, setSession] = useState(null);
 
   useEffect(() => {
@@ -15,6 +17,29 @@ const Footer = () => {
 
   const studioHref = session ? "/workspace" : "/login";
   const studioLabel = session ? "Open Studio" : "Sign in to Studio";
+
+  const handleAnchorClick = (e, targetId) => {
+    if (pathname === "/") {
+      e.preventDefault();
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+        if (window.location.hash !== `#${targetId}`) {
+          window.history.pushState(null, "", `/#${targetId}`);
+        }
+      }
+    }
+  };
+
+  const handleHomeClick = (e) => {
+    if (pathname === "/") {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      if (window.location.hash) {
+        window.history.pushState(null, "", "/");
+      }
+    }
+  };
 
   return (
     <footer className="border-t border-[#2d3934] bg-[#101514] text-[#f5f1e8]">
@@ -68,10 +93,18 @@ const Footer = () => {
               Explore
             </p>
             <nav className="mt-4 flex flex-col items-start gap-3 text-sm text-[#aeb9b0]">
-              <Link className="footer-link transition hover:text-[#c5f56b]" href="/">
+              <Link
+                className="footer-link transition hover:text-[#c5f56b]"
+                href="/"
+                onClick={handleHomeClick}
+              >
                 Home
               </Link>
-              <Link className="footer-link transition hover:text-[#c5f56b]" href="/#how-it-works">
+              <Link
+                className="footer-link transition hover:text-[#c5f56b]"
+                href="/#how-it-works"
+                onClick={(e) => handleAnchorClick(e, "how-it-works")}
+              >
                 How it works
               </Link>
               <Link className="footer-link transition hover:text-[#c5f56b]" href={studioHref}>

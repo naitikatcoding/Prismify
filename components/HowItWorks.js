@@ -93,7 +93,7 @@ export default function HowItWorks() {
   return (
     <section
       id="how-it-works"
-      className="mt-24 border-t border-[#2d3934] pt-16 lg:mt-32"
+      className="scroll-mt-12 mt-24 border-t border-[#2d3934] pt-16 lg:mt-32"
       aria-label="How Prismify Works"
     >
       {/* ── Section Header ── */}
