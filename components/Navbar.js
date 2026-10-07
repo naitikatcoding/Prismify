@@ -11,7 +11,7 @@ const Navbar = () => {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
-  const [imgError, setImgError] = useState(false);
+  const [failedAvatarUrl, setFailedAvatarUrl] = useState(null);
   const accountMenuRef = useRef(null);
 
   const { data: session, status } = useSession();
@@ -20,6 +20,7 @@ const Navbar = () => {
   const avatarLabel = session?.user?.name || session?.user?.email || "Account";
   const avatarInitial = avatarLabel.charAt(0).toUpperCase();
   const avatarUrl = session?.user?.image;
+  const showAvatar = Boolean(avatarUrl && failedAvatarUrl !== avatarUrl);
 
   const handleAnchorClick = (e, targetId) => {
     if (pathname === "/") {
@@ -43,11 +44,6 @@ const Navbar = () => {
       }
     }
   };
-
-  // Reset image error state whenever avatar URL changes
-  useEffect(() => {
-    setImgError(false);
-  }, [avatarUrl]);
 
   // Close account menu when clicking outside
   useEffect(() => {
@@ -135,7 +131,7 @@ const Navbar = () => {
               aria-label="Open account menu"
               aria-expanded={accountMenuOpen}
             >
-              {avatarUrl && !imgError ? (
+              {showAvatar ? (
                 <Image
                   src={avatarUrl}
                   alt={avatarLabel}
@@ -143,7 +139,7 @@ const Navbar = () => {
                   height={40}
                   unoptimized
                   referrerPolicy="no-referrer"
-                  onError={() => setImgError(true)}
+                  onError={() => setFailedAvatarUrl(avatarUrl)}
                   className="h-full w-full object-cover"
                 />
               ) : (
@@ -221,7 +217,7 @@ const Navbar = () => {
         {isSignedIn && (
           <div className="flex items-center gap-3 border-b border-[#34433b]/60 px-3 py-2.5 mb-1">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#c5f56b] bg-[#263a2f] font-bold text-[#c5f56b]">
-              {avatarUrl && !imgError ? (
+              {showAvatar ? (
                 <Image
                   src={avatarUrl}
                   alt={avatarLabel}
@@ -229,7 +225,7 @@ const Navbar = () => {
                   height={36}
                   unoptimized
                   referrerPolicy="no-referrer"
-                  onError={() => setImgError(true)}
+                  onError={() => setFailedAvatarUrl(avatarUrl)}
                   className="h-full w-full object-cover"
                 />
               ) : (
