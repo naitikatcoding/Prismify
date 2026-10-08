@@ -1,210 +1,158 @@
-"use client";
+﻿"use client";
 import React from "react";
+import Image from "next/image";
+import Link from "next/link";
 import { SessionProvider, useSession, signIn, signOut } from "next-auth/react";
+import logo from "../../public/logo.svg";
 
 const LoginContent = () => {
   const { data: session } = useSession();
+
   if (session) {
     return (
-      <>
-        Signed in as {session.user.email} <br />
-        <button onClick={() => signOut()}>Sign out</button>
-      </>
+      <div className="min-h-screen bg-[#101514] flex items-center justify-center px-4">
+        <div className="relative w-full max-w-sm rounded-3xl border border-[#34423b] bg-[#18211e] p-8 text-center shadow-2xl shadow-black/40">
+          <div className="absolute -top-10 left-1/2 -translate-x-1/2 h-40 w-40 rounded-full bg-[#c5f56b]/10 blur-3xl pointer-events-none" />
+          <div className="mb-6 flex justify-center">
+            <div className="h-14 w-14 rounded-full bg-gradient-to-br from-[#c5f56b] to-[#7fe0a8] flex items-center justify-center text-[#101514] font-black text-2xl shadow-lg shadow-[#c5f56b]/20">
+              {session.user?.name?.charAt(0)?.toUpperCase() || "U"}
+            </div>
+          </div>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#718078] mb-2">Signed in as</p>
+          <p className="font-semibold text-[#f5f1e8] mb-6 truncate">{session.user.email}</p>
+          <div className="flex flex-col gap-3">
+            <Link href="/workspace" className="flex w-full items-center justify-center gap-2 rounded-full bg-[#c5f56b] px-6 py-3 text-sm font-bold text-[#101514] transition hover:bg-white">
+              Go to Studio →
+            </Link>
+            <button onClick={() => signOut({ callbackUrl: "/" })} className="flex w-full items-center justify-center rounded-full border border-[#41504a] px-6 py-3 text-sm font-semibold text-[#aeb9b0] transition hover:border-red-500/50 hover:text-red-400">
+              Sign out
+            </button>
+          </div>
+        </div>
+      </div>
     );
   }
+
   return (
-    <div className="min-h-screen bg-gray-100 py-40 px-4 sm:px-6 flex items-center justify-center">
-      <div className="flex flex-col items-center w-full max-w-sm">
-        {/* Heading */}
-        <h1 className="mb-8 text-2xl sm:text-3xl font-bold text-black text-center">
-          Login/Signup To Get Started
-        </h1>
+    <div className="prism-page min-h-screen bg-[#0d1614] text-[#f5f1e8] flex items-center justify-center px-4 py-24 selection:bg-[#c5f56b]/30 selection:text-[#c5f56b]">
+      <div className="prism-grid" aria-hidden="true" />
+      <div className="pointer-events-none fixed top-0 left-1/2 -translate-x-1/2 h-[500px] w-[700px] rounded-full bg-[#c5f56b]/7 blur-[150px]" />
+      <div className="pointer-events-none fixed bottom-0 right-0 h-80 w-80 rounded-full bg-[#7fe0a8]/5 blur-[120px]" />
 
-        {/* Social Login Buttons */}
-        <div className="flex flex-col gap-3.5 w-full items-center">
-          {/* Google */}
-          <button
-            onClick={() => {
-              signIn("google" , { callbackUrl: "/workspace" });
-            }}
-            type="button"
-            className="cursor-pointer flex w-full max-w-xs items-center rounded-lg border border-gray-300 bg-white px-5 sm:px-6 py-2.5 text-sm font-medium text-gray-800 shadow-md transition hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-          >
-            <svg
-              className="mr-2 h-6 w-6"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="-0.5 0 48 48"
+      <div className="relative w-full max-w-sm">
+        <div className="rounded-3xl border border-[#34423b] bg-[#111816]/90 p-8 shadow-2xl shadow-black/50 backdrop-blur-md">
+
+          <div className="mb-8 flex flex-col items-center gap-3">
+            <Link href="/" className="group flex flex-col items-center gap-3">
+              <Image
+                src={logo}
+                alt="Prismify"
+                width={56}
+                height={56}
+                unoptimized
+                className="rounded-2xl shadow-lg shadow-[#c5f56b]/15 ring-1 ring-white/10 transition-transform duration-300 group-hover:rotate-[-4deg] group-hover:scale-105"
+              />
+              <span className="inline-block bg-gradient-to-r from-[#f5f1e8] via-[#d9ffe6] to-[#c5f56b] bg-clip-text font-sans text-3xl font-black leading-[1.2] tracking-[-0.05em] text-transparent">
+                Prismify
+              </span>
+            </Link>
+            <div className="mt-1 text-center">
+              <h1 className="text-xl font-semibold tracking-[-0.03em] text-[#f5f1e8]">Welcome back</h1>
+              <p className="mt-1 text-sm text-[#718078]">Sign in to your creator studio</p>
+            </div>
+          </div>
+
+          <div className="mb-6 h-px bg-gradient-to-r from-transparent via-[#2d3934] to-transparent" />
+
+          <div className="flex flex-col gap-3">
+
+            <button
+              id="login-google"
+              onClick={() => signIn("google", { callbackUrl: "/workspace" })}
+              type="button"
+              className="group relative flex w-full items-center gap-3.5 overflow-hidden rounded-2xl border border-[#3a4a42] bg-[#18231f] px-5 py-3.5 text-sm font-medium text-[#d3dbd2] shadow-sm transition-all duration-200 hover:border-[#c5f56b]/50 hover:bg-[#1d2a24] hover:text-[#f5f1e8] hover:shadow-[0_0_20px_rgba(197,245,107,0.08)] active:scale-[0.98]"
             >
-              <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                <g transform="translate(-401.000000, -860.000000)">
-                  <g transform="translate(401.000000, 860.000000)">
-                    <path
-                      d="M9.82727273,24 C9.82727273,22.4757333 10.0804318,21.0144 10.5322727,19.6437333 L2.62345455,13.6042667 C1.08206818,16.7338667 0.213636364,20.2602667 0.213636364,24 C0.213636364,27.7365333 1.081,31.2608 2.62025,34.3882667 L10.5247955,28.3370667 C10.0772273,26.9728 9.82727273,25.5168 9.82727273,24"
-                      fill="#FBBC05"
-                    />
-
-                    <path
-                      d="M23.7136364,10.1333333 C27.025,10.1333333 30.0159091,11.3066667 32.3659091,13.2266667 L39.2022727,6.4 C35.0363636,2.77333333 29.6954545,0.533333333 23.7136364,0.533333333 C14.4268636,0.533333333 6.44540909,5.84426667 2.62345455,13.6042667 L10.5322727,19.6437333 C12.3545909,14.112 17.5491591,10.1333333 23.7136364,10.1333333"
-                      fill="#EB4335"
-                    />
-
-                    <path
-                      d="M23.7136364,37.8666667 C17.5491591,37.8666667 12.3545909,33.888 10.5322727,28.3562667 L2.62345455,34.3946667 C6.44540909,42.1557333 14.4268636,47.4666667 23.7136364,47.4666667 C29.4455,47.4666667 34.9177955,45.4314667 39.0249545,41.6181333 L31.5177727,35.8144 C29.3995682,37.1488 26.7323189,37.8666667 23.7136364,37.8666667"
-                      fill="#34A853"
-                    />
-
-                    <path
-                      d="M46.1454545,24 C46.1454545,22.6133333 45.9318182,21.12 45.6113636,19.7333333 L23.7136364,19.7333333 L23.7136364,28.8 L36.3181818,28.8 C35.6879545,31.8912 33.9724545,34.2677333 31.5177727,35.8144 L39.0249545,41.6181333 C43.3393409,37.6138667 46.1454545,31.6490667 46.1454545,24"
-                      fill="#4285F4"
-                    />
+              <span className="pointer-events-none absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-transparent via-[#c5f56b]/5 to-transparent transition-transform duration-500 group-hover:translate-x-[100%]" />
+              <svg className="h-5 w-5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 0 48 48">
+                <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+                  <g transform="translate(-401.000000, -860.000000)">
+                    <g transform="translate(401.000000, 860.000000)">
+                      <path d="M9.82727273,24 C9.82727273,22.4757333 10.0804318,21.0144 10.5322727,19.6437333 L2.62345455,13.6042667 C1.08206818,16.7338667 0.213636364,20.2602667 0.213636364,24 C0.213636364,27.7365333 1.081,31.2608 2.62025,34.3882667 L10.5247955,28.3370667 C10.0772273,26.9728 9.82727273,25.5168 9.82727273,24" fill="#FBBC05" />
+                      <path d="M23.7136364,10.1333333 C27.025,10.1333333 30.0159091,11.3066667 32.3659091,13.2266667 L39.2022727,6.4 C35.0363636,2.77333333 29.6954545,0.533333333 23.7136364,0.533333333 C14.4268636,0.533333333 6.44540909,5.84426667 2.62345455,13.6042667 L10.5322727,19.6437333 C12.3545909,14.112 17.5491591,10.1333333 23.7136364,10.1333333" fill="#EB4335" />
+                      <path d="M23.7136364,37.8666667 C17.5491591,37.8666667 12.3545909,33.888 10.5322727,28.3562667 L2.62345455,34.3946667 C6.44540909,42.1557333 14.4268636,47.4666667 23.7136364,47.4666667 C29.4455,47.4666667 34.9177955,45.4314667 39.0249545,41.6181333 L31.5177727,35.8144 C29.3995682,37.1488 26.7323189,37.8666667 23.7136364,37.8666667" fill="#34A853" />
+                      <path d="M46.1454545,24 C46.1454545,22.6133333 45.9318182,21.12 45.6113636,19.7333333 L23.7136364,19.7333333 L23.7136364,28.8 L36.3181818,28.8 C35.6879545,31.8912 33.9724545,34.2677333 31.5177727,35.8144 L39.0249545,41.6181333 C43.3393409,37.6138667 46.1454545,31.6490667 46.1454545,24" fill="#4285F4" />
+                    </g>
                   </g>
                 </g>
-              </g>
-            </svg>
+              </svg>
+              <span className="flex-1 text-left">Continue with Google</span>
+              <svg className="h-4 w-4 shrink-0 opacity-0 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0.5" fill="none" viewBox="0 0 16 16" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8h10M9 4l4 4-4 4" /></svg>
+            </button>
 
-            <span>Continue with Google</span>
-          </button>
-
-          {/* LinkedIn */}
-          <button
-            disabled
-            type="button"
-            className="cursor-pointer flex w-full max-w-xs items-center rounded-lg border border-gray-300 bg-white px-5 sm:px-6 py-2.5 text-sm font-medium text-gray-800 shadow-md transition hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-          >
-            <svg
-              className="mr-2 h-6 w-6"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 -2 44 44"
+            <button
+              id="login-github"
+              onClick={() => signIn("github", { callbackUrl: "/workspace" })}
+              type="button"
+              className="group relative flex w-full items-center gap-3.5 overflow-hidden rounded-2xl border border-[#3a4a42] bg-[#18231f] px-5 py-3.5 text-sm font-medium text-[#d3dbd2] shadow-sm transition-all duration-200 hover:border-[#c5f56b]/50 hover:bg-[#1d2a24] hover:text-[#f5f1e8] hover:shadow-[0_0_20px_rgba(197,245,107,0.08)] active:scale-[0.98]"
             >
-              <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                <g
-                  transform="translate(-702.000000, -265.000000)"
-                  fill="#007EBB"
-                >
-                  <path d="M746,305 L736.2754,305 L736.2754,290.9384 C736.2754,287.257796 734.754233,284.74515 731.409219,284.74515 C728.850659,284.74515 727.427799,286.440738 726.765522,288.074854 C726.517168,288.661395 726.555974,289.478453 726.555974,290.295511 L726.555974,305 L716.921919,305 C716.921919,305 717.046096,280.091247 716.921919,277.827047 L726.555974,277.827047 L726.555974,282.091631 C727.125118,280.226996 730.203669,277.565794 735.116416,277.565794 C741.21143,277.565794 746,281.474355 746,289.890824 L746,305 L746,305 Z M707.17921,274.428187 L707.117121,274.428187 C704.0127,274.428187 702,272.350964 702,269.717936 C702,267.033681 704.072201,265 707.238711,265 C710.402634,265 712.348071,267.028559 712.41016,269.710252 C712.41016,272.34328 710.402634,274.428187 707.17921,274.428187 L707.17921,274.428187 Z M703.109831,277.827047 L711.685795,277.827047 L711.685795,305 L703.109831,305 L703.109831,277.827047 Z" />
-                </g>
-              </g>
-            </svg>
+              <span className="pointer-events-none absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-transparent via-[#c5f56b]/5 to-transparent transition-transform duration-500 group-hover:translate-x-[100%]" />
+              <svg className="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+              </svg>
+              <span className="flex-1 text-left">Continue with GitHub</span>
+              <svg className="h-4 w-4 shrink-0 opacity-0 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0.5" fill="none" viewBox="0 0 16 16" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8h10M9 4l4 4-4 4" /></svg>
+            </button>
 
-            <span>Continue with LinkedIn</span>
-          </button>
+            <div className="flex items-center gap-3 py-1">
+              <span className="flex-1 h-px bg-[#2d3934]" />
+              <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#3d4e46]">More coming soon</span>
+              <span className="flex-1 h-px bg-[#2d3934]" />
+            </div>
 
-          {/* Twitter */}
-          <button
-            disabled
-            type="button"
-            className="cursor-pointer flex w-full max-w-xs items-center rounded-lg border border-gray-300 bg-white px-5 sm:px-6 py-2.5 text-sm font-medium text-gray-800 shadow-md transition hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-          >
-            <svg
-              className="mr-2 h-6 w-6"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 -4 48 48"
-            >
-              <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                <g
-                  transform="translate(-300.000000, -164.000000)"
-                  fill="#00AAEC"
-                >
-                  <path d="M348,168.735283 C346.236309,169.538462 344.337383,170.081618 342.345483,170.324305 C344.379644,169.076201 345.940482,167.097147 346.675823,164.739617 C344.771263,165.895269 342.666667,166.736006 340.418384,167.18671 C338.626519,165.224991 336.065504,164 333.231203,164 C327.796443,164 323.387216,168.521488 323.387216,174.097508 C323.387216,174.88913 323.471738,175.657638 323.640782,176.397255 C315.456242,175.975442 308.201444,171.959552 303.341433,165.843265 C302.493397,167.339834 302.008804,169.076201 302.008804,170.925244 C302.008804,174.426869 303.747139,177.518238 306.389857,179.329722 C304.778306,179.280607 303.256911,178.821235 301.9271,178.070061 L301.9271,178.194294 C301.9271,183.08848 305.322064,187.17082 309.8299,188.095341 C309.004402,188.33225 308.133826,188.450704 307.235077,188.450704 C306.601162,188.450704 305.981335,188.390033 305.381229,188.271578 C306.634971,192.28169 310.269414,195.2026 314.580032,195.280607 C311.210424,197.99061 306.961789,199.605634 302.349709,199.605634 C301.555203,199.605634 300.769149,199.559408 300,199.466956 C304.358514,202.327194 309.53689,204 315.095615,204 C333.211481,204 343.114633,188.615385 343.114633,175.270495 C343.114633,174.831347 343.106181,174.392199 343.089276,173.961719 C345.013559,172.537378 346.684275,170.760563 348,168.735283" />
-                </g>
-              </g>
-            </svg>
+            <button disabled type="button" className="flex w-full cursor-not-allowed items-center gap-3.5 rounded-2xl border border-[#2a3630] bg-[#131c19] px-5 py-3.5 text-sm font-medium text-[#3d4e46] opacity-50">
+              <svg className="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="#0077B5"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+              <span className="flex-1 text-left">Continue with LinkedIn</span>
+              <span className="rounded-full border border-[#2d3934] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#3d4e46]">Soon</span>
+            </button>
 
-            <span>Continue with Twitter</span>
-          </button>
+            <button disabled type="button" className="flex w-full cursor-not-allowed items-center gap-3.5 rounded-2xl border border-[#2a3630] bg-[#131c19] px-5 py-3.5 text-sm font-medium text-[#3d4e46] opacity-50">
+              <svg className="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.741l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
+              <span className="flex-1 text-left">Continue with X / Twitter</span>
+              <span className="rounded-full border border-[#2d3934] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#3d4e46]">Soon</span>
+            </button>
+          </div>
 
-          {/* Facebook */}
-          <button
-            disabled
-            type="button"
-            className="cursor-pointer flex w-full max-w-xs items-center rounded-lg border border-gray-300 bg-white px-5 sm:px-6 py-2.5 text-sm font-medium text-gray-800 shadow-md transition hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-          >
-            <svg
-              className="mr-2 h-6 w-6"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 48 48"
-            >
-              <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                <g
-                  transform="translate(-200.000000, -160.000000)"
-                  fill="#4460A0"
-                >
-                  <path d="M225.638355,208 L202.649232,208 C201.185673,208 200,206.813592 200,205.350603 L200,162.649211 C200,161.18585 201.185859,160 202.649232,160 L245.350955,160 C246.813955,160 248,161.18585 248,162.649211 L248,205.350603 C248,206.813778 246.813769,208 245.350955,208 L233.119305,208 L233.119305,189.411755 L239.358521,189.411755 L240.292755,182.167586 L233.119305,182.167586 L233.119305,177.542641 C233.119305,175.445287 233.701712,174.01601 236.70929,174.01601 L240.545311,174.014333 L240.545311,167.535091 C239.881886,167.446808 237.604784,167.24957 234.955552,167.24957 C229.424834,167.24957 225.638355,170.625526 225.638355,176.825209 L225.638355,182.167586 L219.383122,182.167586 L219.383122,189.411755 L225.638355,189.411755 L225.638355,208 Z" />
-                </g>
-              </g>
-            </svg>
+          <p className="mt-6 text-center text-xs leading-5 text-[#4d5e55]">
+            By continuing, you agree to our{" "}
+            <Link href="/" className="text-[#718078] underline-offset-2 hover:text-[#c5f56b] hover:underline transition-colors">Terms</Link>
+            {" "}&amp;{" "}
+            <Link href="/" className="text-[#718078] underline-offset-2 hover:text-[#c5f56b] hover:underline transition-colors">Privacy Policy</Link>.
+          </p>
+        </div>
 
-            <span>Continue with Facebook</span>
-          </button>
-
-          {/* GitHub */}
-          <button
-            onClick={() => {
-              signIn("github" , { callbackUrl: "/workspace" });
-            }}
-            type="button"
-            className="cursor-pointer flex w-full max-w-xs items-center rounded-lg border border-gray-300 bg-white px-5 sm:px-6 py-2.5 text-sm font-medium text-gray-800 shadow-md transition hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-          >
-            <svg
-              className="mr-2 h-6 w-6"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 73 73"
-            >
-              <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                <g transform="translate(2.000000, 2.000000)" fillRule="nonzero">
-                  <rect
-                    stroke="#000000"
-                    strokeWidth="2"
-                    fill="#000000"
-                    x="-1"
-                    y="-1"
-                    width="71"
-                    height="71"
-                    rx="14"
-                  />
-
-                  <path
-                    d="M58.3067362,21.4281798 C55.895743,17.2972267 52.6253846,14.0267453 48.4948004,11.615998 C44.3636013,9.20512774 39.8535636,8 34.9614901,8 C30.0700314,8 25.5585181,9.20549662 21.4281798,11.615998 C17.2972267,14.0266224 14.0269912,17.2972267 11.615998,21.4281798 C9.20537366,25.5590099 8,30.0699084 8,34.9607523 C8,40.8357654 9.71405782,46.1187277 13.1430342,50.8109917 C16.5716416,55.5036246 21.0008949,58.7507436 26.4304251,60.5527176 C27.0624378,60.6700211 27.5302994,60.5875152 27.8345016,60.3072901 C28.1388268,60.0266961 28.290805,59.6752774 28.290805,59.2545094 C28.290805,59.1842994 28.2847798,58.5526556 28.2730988,57.3588401 C28.2610487,56.1650247 28.2553926,55.1235563 28.2553926,54.2349267 L27.4479164,54.3746089 C26.9330843,54.468919 26.2836113,54.5088809 25.4994975,54.4975686 C24.7157525,54.4866252 23.9021284,54.4044881 23.0597317,54.2517722 C22.2169661,54.1004085 21.4330981,53.749359 20.7075131,53.1993604 C19.982297,52.6493618 19.4674645,51.9294329 19.1631397,51.0406804 C18.5780976,49.6950097 18.2097104,49.0975487 17.7064365,48.4426655 C17.2031625,47.7871675 16.6942321,47.3427912 16.1794003,47.108799 C15.7698216,46.815909 15.6178435,46.6748743 15.4773006,46.511215 C15.3368806,46.3475556 15.2317501,46.1837734 15.1615401,46.0197452 C15.0912072,45.855594 15.1494901,45.7209532 15.3370036,45.6153308 C15.5245171,45.5097084 15.8633939,45.4584343 16.3551097,45.4584343 L17.0569635,45.5633189 C17.5250709,45.6571371 18.104088,45.9373622 18.7947525,46.4057156 C19.4850481,46.8737001 20.052507,47.4821045 20.4972521,48.230683 C21.0358155,49.1905062 21.6846737,49.9218703 22.4456711,50.425144 C23.2060537,50.9284182 23.9727073,51.1796248 24.744894,51.1796248 C25.5170807,51.1796248 26.1840139,51.121096 26.7459396,51.0046532 C27.3072505,50.8875956 27.8338868,50.7116403 28.3256025,50.477771 C28.5362325,48.9090515 29.1097164,47.7039238 30.0455624,46.8615271 C28.7116959,46.721353 27.5124702,46.5102313 26.4472706,46.2295144 C25.382685,45.9484285 24.2825656,45.4922482 23.1476478,44.8597436 C22.0121153,44.2280997 21.0701212,43.44374 20.3214198,42.5080169 C19.5725954,41.571802 18.9580429,40.3426975 18.4786232,38.821809 C17.9989575,37.300306 17.7590632,35.5451796 17.7590632,33.5559381 C17.7590632,30.7235621 18.6837199,28.3133066 20.5326645,26.3238191 C19.6665366,24.1944035 19.7483048,21.8072644 20.778215,19.1626478 C21.4569523,18.951772 22.4635002,19.1100211 23.7973667,19.6364115 C25.1314792,20.1630477 26.1082708,20.6141868 26.7287253,20.9882301 C27.3491798,21.3621504 27.8463057,21.6790175 28.2208409,21.9360032 C30.3978419,21.3277217 32.644438,21.0235195 34.9612442,21.0235195 C37.2780503,21.0235195 39.5251383,21.3277217 41.7022622,21.9360032 L43.0362517,21.0938524 C43.9484895,20.5319267 45.0257396,20.0169716 46.2654186,19.5488642 C47.5058357,19.0810026 48.4543466,18.9521409 49.1099676,19.1630167 C50.1627483,21.8077563 50.2565666,24.1947724 49.3901927,26.324188 C51.2390143,28.3136755 52.1640399,30.7245457 52.1640399,33.556307 C52.1640399,35.5455485 51.9232849,37.3062081 51.444357,38.8393922 C50.9648143,40.3728225 50.3449746,41.6006975 49.5845919,42.5256002 C48.8233486,43.4503799 47.8753296,44.2285916 46.7404118,44.8601125 C45.6052481,45.4921252 44.504759,45.9483056 43.4401742,46.2293914 C42.3750975,46.5104772 41.1758719,46.7217219 39.8420054,46.8621419 C41.0585683,47.9149226 41.6669728,49.5767225 41.6669728,51.846804 L41.6669728,59.2535257 C41.6669728,59.6742937 41.8132945,60.0255895 42.1061847,60.3063064 C42.3987058,60.5865315 42.8606658,60.6690374 43.492678,60.5516109 C48.922946,58.7498829 53.3521992,55.5026409 56.7806837,50.810008 C60.2087994,46.117744 61.923472,40.8347817 61.923472,34.9597686 C61.9222424,30.0695396 60.7162539,25.5590096 58.3067362,21.4281798 Z"
-                    fill="#FFFFFF"
-                  />
-                </g>
-              </g>
-            </svg>
-
-            <span>Continue with Github</span>
-          </button>
-
-          {/* Apple */}
-          <button
-            disabled
-            type="button"
-            className="cursor-pointer flex w-full max-w-xs items-center rounded-lg border border-gray-300 bg-white px-5 sm:px-6 py-2.5 text-sm font-medium text-gray-800 shadow-md transition hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-          >
-            <svg
-              className="mr-2 h-6 w-6"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="-1.5 0 20 20"
-            >
-              <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                <g
-                  transform="translate(-102.000000, -7439.000000)"
-                  fill="#000000"
-                >
-                  <g transform="translate(56.000000, 160.000000)">
-                    <path d="M57.5708873,7282.19296 C58.2999598,7281.34797 58.7914012,7280.17098 58.6569121,7279 C57.6062792,7279.04 56.3352055,7279.67099 55.5818643,7280.51498 C54.905374,7281.26397 54.3148354,7282.46095 54.4735932,7283.60894 C55.6455696,7283.69593 56.8418148,7283.03894 57.5708873,7282.19296 M60.1989864,7289.62485 C60.2283111,7292.65181 62.9696641,7293.65879 63,7293.67179 C62.9777537,7293.74279 62.562152,7295.10677 61.5560117,7296.51675 C60.6853718,7297.73474 59.7823735,7298.94772 58.3596209,7298.97372 C56.9621472,7298.99872 56.5121648,7298.17973 54.9134635,7298.17973 C53.3157735,7298.17973 52.8162425,7298.94772 51.4935978,7298.99872 C50.1203933,7299.04772 49.0738052,7297.68074 48.197098,7296.46676 C46.4032359,7293.98379 45.0330649,7289.44985 46.8734421,7286.3899 C47.7875635,7284.87092 49.4206455,7283.90793 51.1942837,7283.88393 C52.5422083,7283.85893 53.8153044,7284.75292 54.6394294,7284.75292 C55.4635543,7284.75292 57.0106846,7283.67793 58.6366882,7283.83593 C59.3172232,7283.86293 61.2283842,7284.09893 62.4549652,7285.8199 C62.355868,7285.8789 60.1747177,7287.09489 60.1989864,7289.62485" />
-                  </g>
-                </g>
-              </g>
-            </svg>
-
-            <span>Continue with Apple</span>
-          </button>
+        <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+          <span className="flex items-center gap-1.5 text-[11px] text-[#3d4e46]">
+            <svg className="h-3 w-3 text-[#c5f56b]" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l1.5 4.5H14l-3.7 2.7 1.4 4.3L8 9.8l-3.7 2.7 1.4-4.3L2 5.5h4.5z" /></svg>
+            No credit card needed
+          </span>
+          <span className="flex items-center gap-1.5 text-[11px] text-[#3d4e46]">
+            <svg className="h-3 w-3 text-[#c5f56b]" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="7" width="10" height="7" rx="1.5" /><path d="M5 7V5a3 3 0 016 0v2" /></svg>
+            Private by default
+          </span>
+          <span className="flex items-center gap-1.5 text-[11px] text-[#3d4e46]">
+            <svg className="h-3 w-3 text-[#c5f56b]" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M13 3L6 10l-3-3" /></svg>
+            Free to get started
+          </span>
         </div>
       </div>
     </div>
   );
 };
 
-const Page = () => <LoginContent />;
+const Page = () => (
+  <SessionProvider>
+    <LoginContent />
+  </SessionProvider>
+);
 
 export default Page;
