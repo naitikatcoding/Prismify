@@ -132,13 +132,13 @@ const Footer = () => {
               Follow along
             </p>
             <nav className="mt-4 flex flex-col items-start gap-3 text-sm text-[#aeb9b0]">
-              <a className="footer-link transition hover:text-[#c5f56b]" href="https://www.linkedin.com/in/naitik-gupta-509b6a37a" target="blank" rel="noreferrer">
+              <a className="footer-link transition hover:text-[#c5f56b]" href="https://www.linkedin.com/in/naitik-gupta-509b6a37a" target="_blank" rel="noreferrer">
                 LinkedIn
               </a>
-              <a className="footer-link transition hover:text-[#c5f56b]" href="https://x.com/NGupta20845" target="blank" rel="noreferrer">
+              <a className="footer-link transition hover:text-[#c5f56b]" href="https://x.com/NGupta20845" target="_blank" rel="noreferrer">
                 X / Twitter
               </a>
-              <a className="footer-link transition hover:text-[#c5f56b]" href="https://github.com/naitikatcoding" target="blank" rel="noreferrer">
+              <a className="footer-link transition hover:text-[#c5f56b]" href="https://github.com/naitikatcoding" target="_blank" rel="noreferrer">
                 Github
               </a>
             </nav>
