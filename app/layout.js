@@ -16,7 +16,24 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "Prismify - Turn text into anything",
-  description: "Turn rough thoughts into polished content that sounds like you.",
+  description:
+    "Turn rough thoughts into polished content that sounds like you. Generate LinkedIn posts, X threads, newsletters, and more in seconds.",
+  keywords: ["AI content", "LinkedIn posts", "X threads", "content generator", "Prismify"],
+  openGraph: {
+    title: "Prismify - Turn text into anything",
+    description:
+      "Turn rough thoughts into polished content that sounds like you.",
+    url: "https://prismify.vercel.app",
+    siteName: "Prismify",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Prismify - Turn text into anything",
+    description:
+      "Turn rough thoughts into polished content that sounds like you.",
+    creator: "@naitikatcoding",
+  },
 };
 
 export default function RootLayout({ children }) {
