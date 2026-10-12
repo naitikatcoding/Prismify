@@ -49,7 +49,7 @@ const Footer = () => {
             <div className="flex items-center gap-3">
               <Image
                 src={logo}
-                alt=""
+                alt="Prismify logo"
                 width={40}
                 height={40}
                 unoptimized
@@ -132,14 +132,14 @@ const Footer = () => {
               Follow along
             </p>
             <nav className="mt-4 flex flex-col items-start gap-3 text-sm text-[#aeb9b0]">
-              <a className="footer-link transition hover:text-[#c5f56b]" href="https://www.linkedin.com/in/naitik-gupta-509b6a37a" target="_blank" rel="noreferrer">
+              <a className="footer-link transition hover:text-[#c5f56b]" href="https://www.linkedin.com/in/naitik-gupta-509b6a37a" target="_blank" rel="noopener noreferrer">
                 LinkedIn
               </a>
-              <a className="footer-link transition hover:text-[#c5f56b]" href="https://x.com/NGupta20845" target="_blank" rel="noreferrer">
+              <a className="footer-link transition hover:text-[#c5f56b]" href="https://x.com/NGupta20845" target="_blank" rel="noopener noreferrer">
                 X / Twitter
               </a>
-              <a className="footer-link transition hover:text-[#c5f56b]" href="https://github.com/naitikatcoding" target="_blank" rel="noreferrer">
-                Github
+              <a className="footer-link transition hover:text-[#c5f56b]" href="https://github.com/naitikatcoding" target="_blank" rel="noopener noreferrer">
+                GitHub
               </a>
             </nav>
           </div>
