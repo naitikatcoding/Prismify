@@ -76,7 +76,7 @@ const Navbar = () => {
           width={40}
           height={40}
           src={logo}
-          alt=""
+          alt="Prismify logo"
           unoptimized
           className="rounded-xl shadow-md shadow-[#c5f56b]/10 ring-1 ring-white/15 transition-transform duration-300 group-hover:rotate-[-4deg] group-hover:scale-105"
         />
@@ -285,10 +285,10 @@ const Navbar = () => {
         ) : (
           <Link
             className="mt-2 rounded-xl bg-[#c5f56b] px-4 py-3 text-center font-bold text-[#101514]"
-            href="/workspace"
+            href={studioHref}
             onClick={() => setMobileMenuOpen(false)}
           >
-            Get started -&gt;
+            Get started →
           </Link>
         )}
       </div>
