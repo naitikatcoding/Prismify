@@ -5,6 +5,8 @@ import connectToDatabase from "@/lib/mongodb";
 import Content from "@/models/Content";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
+const MAX_INPUT_LENGTH = 5000;
+
 async function getAuthenticatedSession() {
   return getServerSession(authOptions);
 }
@@ -20,7 +22,7 @@ export async function GET() {
     await connectToDatabase();
     const content = await Content.find({ userId: session.user.id })
       .sort({ createdAt: -1 })
-      .limit(20)
+      .limit(50)
       .lean();
 
     return NextResponse.json({ content });
@@ -52,6 +54,13 @@ export async function POST(request) {
 
     if (!rawInput) {
       return NextResponse.json({ error: "Content input cannot be empty." }, { status: 400 });
+    }
+
+    if (rawInput.length > MAX_INPUT_LENGTH) {
+      return NextResponse.json(
+        { error: `Input too long. Please keep it under ${MAX_INPUT_LENGTH} characters.` },
+        { status: 400 }
+      );
     }
 
     const groq = new Groq({ apiKey });
