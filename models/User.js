@@ -2,17 +2,19 @@ import mongoose from "mongoose";
 
 const { Schema, model } = mongoose;
 
-const UserSchema = new Schema({
-  email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+const UserSchema = new Schema(
+  {
+    name: { type: String, trim: true, default: "" },
 
-  profilePic: { type: String },
+    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
 
+    profilePic: { type: String },
 
-  isProfileSaved: { type: Boolean, default: false },
+    isProfileSaved: { type: Boolean, default: false },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-  createdAt: { type: Date, default: Date.now },
-
-  updatedAt: { type: Date, default: Date.now },
-});
-
-export default mongoose.models.User || model("User", UserSchema);
+export default mongoose.models.User || model("User", UserSchema);
