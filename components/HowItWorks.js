@@ -2,15 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import {
-  Mic,
-  FileText,
-  Sparkles,
-  Share2,
-  Copy,
-  Check,
-  ArrowRight,
-} from "lucide-react";
+import { Mic, FileText, Copy, Check, ArrowRight } from "lucide-react";
 
 export default function HowItWorks() {
   // Step 1: Input format state
@@ -312,7 +304,7 @@ export default function HowItWorks() {
           Have an unformed idea in your head right now?
         </p>
         <Link
-          href="/workspace"
+          href="/login"
           className="group inline-flex items-center gap-1.5 text-xs font-semibold text-[#c5f56b] transition hover:text-white"
         >
           <span>Try it in the workspace</span>
