@@ -1,8 +1,7 @@
-﻿"use client";
-import React from "react";
+"use client";
 import Image from "next/image";
 import Link from "next/link";
-import { SessionProvider, useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import logo from "../../public/logo.svg";
 
 const LoginContent = () => {
@@ -125,7 +124,7 @@ const LoginContent = () => {
           <p className="mt-6 text-center text-xs leading-5 text-[#4d5e55]">
             By continuing, you agree to our{" "}
             <Link href="/" className="text-[#718078] underline-offset-2 hover:text-[#c5f56b] hover:underline transition-colors">Terms</Link>
-            {" "}&amp;{" "}
+            {" & "}
             <Link href="/" className="text-[#718078] underline-offset-2 hover:text-[#c5f56b] hover:underline transition-colors">Privacy Policy</Link>.
           </p>
         </div>
@@ -149,10 +148,4 @@ const LoginContent = () => {
   );
 };
 
-const Page = () => (
-  <SessionProvider>
-    <LoginContent />
-  </SessionProvider>
-);
-
-export default Page;
+export default LoginContent;
