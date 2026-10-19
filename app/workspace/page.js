@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { getSession } from "next-auth/react";
 import { Loader2, Copy, Check, ChevronDown } from "lucide-react";
 
-const TONES = ["Professional", "Viral/Hype", "Deep/Thoughtful", "Casual/Witty"];
+const TONES = ["Professional", "Conversational", "Bold"];
 
 const TABS = [
   { id: "twitter", label: "🐦 Twitter Thread" },
