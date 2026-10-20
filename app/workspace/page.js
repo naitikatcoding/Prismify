@@ -171,8 +171,8 @@ export default function WorkspacePage() {
               >
                 Source content
               </label>
-              <span className="text-xs text-[#718078]">
-                {rawInput.trim() ? `${Math.min(rawInput.trim().length, 999)} chars` : "No content yet"}
+              <span className={`text-xs ${rawInput.trim().length > 4500 ? "text-red-400" : "text-[#718078]"}`}>
+                {rawInput.trim() ? `${rawInput.trim().length} / 5000 chars` : "No content yet"}
               </span>
             </div>
 
