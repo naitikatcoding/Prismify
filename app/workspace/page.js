@@ -214,9 +214,8 @@ export default function WorkspacePage() {
             <button
               type="submit"
               disabled={isLoading || !rawInput.trim()}
-              className={`mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#c5f56b] to-[#7fe0a8] px-4 py-3 text-sm font-bold text-[#101514] shadow-[0_0_20px_rgba(197,245,107,0.2)] transition hover:brightness-110 ${
-                isLoading || !rawInput.trim() ? "cursor-not-allowed opacity-50" : ""
-              }`}
+              className={`mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#c5f56b] to-[#7fe0a8] px-4 py-3 text-sm font-bold text-[#101514] shadow-[0_0_20px_rgba(197,245,107,0.2)] transition hover:brightness-110 ${isLoading || !rawInput.trim() ? "cursor-not-allowed opacity-50" : ""
+                }`}
             >
               {isLoading ? (
                 <>
@@ -253,11 +252,10 @@ export default function WorkspacePage() {
                     key={tab.id}
                     type="button"
                     onClick={() => setActiveTab(tab.id)}
-                    className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
-                      activeTab === tab.id
+                    className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition ${activeTab === tab.id
                         ? "border-[#c5f56b] bg-[#c5f56b] text-[#101514]"
                         : "border-[#41504a] text-[#aeb9b0] hover:border-[#c5f56b] hover:text-[#c5f56b]"
-                    }`}
+                      }`}
                   >
                     {tab.label}
                   </button>
