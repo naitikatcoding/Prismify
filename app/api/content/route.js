@@ -135,3 +135,35 @@ Do not include any conversational filler outside the JSON.`,
     );
   }
 }
+
+export async function DELETE(request) {
+  const session = await getAuthenticatedSession();
+
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json({ error: "Content ID is required" }, { status: 400 });
+    }
+
+    await connectToDatabase();
+    const result = await Content.findOneAndDelete({
+      _id: id,
+      userId: session.user.id,
+    });
+
+    if (!result) {
+      return NextResponse.json({ error: "Content not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: "Content deleted successfully" });
+  } catch (error) {
+    console.error("[Content API] Failed to delete content:", error);
+    return NextResponse.json({ error: "Unable to delete content" }, { status: 500 });
+  }
+}

@@ -3,7 +3,19 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSession } from "next-auth/react";
-import { Loader2, Copy, Check, ChevronDown } from "lucide-react";
+import {
+  Loader2,
+  Copy,
+  Check,
+  ChevronDown,
+  History,
+  Trash2,
+  X,
+  Download,
+  FileText,
+  ArrowRight,
+  Sparkles,
+} from "lucide-react";
 
 const TONES = ["Professional", "Conversational", "Bold"];
 
@@ -20,9 +32,15 @@ export default function WorkspacePage() {
   const [activeTab, setActiveTab] = useState("twitter");
   const [isLoading, setIsLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [copiedIndex, setCopiedIndex] = useState(null);
+  const [downloadSuccess, setDownloadSuccess] = useState(false);
   const [generatedData, setGeneratedData] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [savedCount, setSavedCount] = useState(0);
+  const [history, setHistory] = useState([]);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
   const [saveStatus, setSaveStatus] = useState("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -41,15 +59,20 @@ export default function WorkspacePage() {
       }
 
       try {
+        setLoadingHistory(true);
         const response = await fetch("/api/content");
         if (response.ok) {
           const data = await response.json();
           if (isMounted) {
-            setSavedCount(data.content?.length || 0);
+            const list = data.content || [];
+            setHistory(list);
+            setSavedCount(list.length);
           }
         }
       } catch (error) {
         console.error("Failed to load saved content:", error);
+      } finally {
+        if (isMounted) setLoadingHistory(false);
       }
     };
 
@@ -77,6 +100,7 @@ export default function WorkspacePage() {
   if (!authChecked) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[#101514] px-5 text-sm text-[#aeb9b0]">
+        <Loader2 size={20} className="mr-2 animate-spin text-[#c5f56b]" />
         Checking your session...
       </main>
     );
@@ -108,6 +132,7 @@ export default function WorkspacePage() {
       if (data.content?.outputs) {
         setGeneratedData(data.content.outputs);
         setActiveTab("twitter");
+        setHistory((prev) => [data.content, ...prev]);
         setSavedCount((count) => count + 1);
         setSaveStatus("saved");
       } else {
@@ -143,26 +168,123 @@ export default function WorkspacePage() {
     }
   };
 
+  const handleCopyTweet = async (tweet, index) => {
+    try {
+      await navigator.clipboard.writeText(tweet);
+      setCopiedIndex(index);
+      setTimeout(() => setCopiedIndex(null), 2000);
+    } catch (err) {
+      console.error("Copy tweet failed:", err);
+    }
+  };
+
+  const handleDownloadAll = () => {
+    if (!generatedData) return;
+    const tweets = Array.isArray(generatedData.twitterThread)
+      ? generatedData.twitterThread.map((t, i) => `${i + 1}/ ${t}`).join("\n\n")
+      : (generatedData.twitterThread || "");
+
+    const mdContent = `# Prismify Repurposed Content
+**Tone:** ${selectedTone}
+**Date:** ${new Date().toLocaleString()}
+
+---
+
+## 🐦 Twitter Thread
+${tweets}
+
+---
+
+## 💼 LinkedIn Post
+${generatedData.linkedinPost || ""}
+
+---
+
+## 📧 Newsletter
+${generatedData.newsletter || ""}
+`;
+
+    const blob = new Blob([mdContent], { type: "text/markdown;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `prismify-content-${Date.now()}.md`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    setDownloadSuccess(true);
+    setTimeout(() => setDownloadSuccess(false), 2000);
+  };
+
+  const handleLoadItem = (item) => {
+    setRawInput(item.rawInput || "");
+    if (item.tone && TONES.includes(item.tone)) {
+      setSelectedTone(item.tone);
+    }
+    if (item.outputs) {
+      setGeneratedData(item.outputs);
+      setActiveTab("twitter");
+    }
+    setIsHistoryOpen(false);
+  };
+
+  const handleDeleteItem = async (e, id) => {
+    e.stopPropagation();
+    if (!id || deletingId) return;
+    setDeletingId(id);
+    try {
+      const res = await fetch(`/api/content?id=${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        setHistory((prev) => prev.filter((item) => item._id !== id));
+        setSavedCount((count) => Math.max(0, count - 1));
+      }
+    } catch (err) {
+      console.error("Failed to delete content item:", err);
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-[#101514] px-5 pb-8 pt-32 text-[#f5f1e8] sm:px-8 lg:px-12">
       <div className="mx-auto max-w-7xl">
         <header className="mb-6 flex flex-col gap-4 border-b border-[#2d3934] pb-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#718078]">
-              Studio
-            </p>
+            <div className="flex items-center gap-3">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#718078]">
+                Studio
+              </p>
+              {savedCount > 0 && (
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#34423b] bg-[#15201d] px-2.5 py-0.5 text-[11px] font-medium text-[#c5f56b]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#c5f56b] animate-pulse" />
+                  {savedCount} {savedCount === 1 ? "creation" : "creations"}
+                </span>
+              )}
+            </div>
             <h1 className="mt-2 text-3xl font-semibold tracking-[-0.05em] sm:text-4xl">
               Content repurposing workspace
             </h1>
           </div>
 
-
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setIsHistoryOpen(true)}
+              className="flex items-center gap-2 rounded-xl border border-[#34423b] bg-[#15201d] px-4 py-2.5 text-xs font-semibold text-[#d3dbd2] transition hover:border-[#c5f56b] hover:text-[#c5f56b]"
+            >
+              <History size={15} />
+              <span>History ({savedCount})</span>
+            </button>
+          </div>
         </header>
 
         <section className="grid gap-5 lg:grid-cols-[0.82fr_1.18fr]">
           <form
             onSubmit={handleSubmit}
-            className="rounded-[1.5rem] border border-[#34423b] bg-[#15201d] p-5 shadow-[0_0_0_1px_rgba(197,245,107,0.02)]"
+            className="flex flex-col rounded-[1.5rem] border border-[#34423b] bg-[#15201d] p-5 shadow-[0_0_0_1px_rgba(197,245,107,0.02)]"
           >
             <div className="flex items-center justify-between gap-3">
               <label
@@ -180,11 +302,28 @@ export default function WorkspacePage() {
               id="source"
               value={rawInput}
               onChange={(e) => setRawInput(e.target.value)}
-              className="mt-5 min-h-[18rem] w-full resize-none rounded-[1rem] border border-[#46544c] bg-[#111816] p-4 text-sm leading-6 text-[#d3dbd2] outline-none placeholder:text-[#718078] focus:border-[#c5f56b] focus:ring-2 focus:ring-[#c5f56b]/30"
+              className="mt-4 min-h-[16rem] w-full resize-none rounded-[1rem] border border-[#46544c] bg-[#111816] p-4 text-sm leading-6 text-[#d3dbd2] outline-none placeholder:text-[#718078] focus:border-[#c5f56b] focus:ring-2 focus:ring-[#c5f56b]/30"
               placeholder="Paste a transcript, idea, article draft, or rough note..."
             />
 
-            <div className="mt-5 rounded-[1rem] border border-[#2d3934] bg-[#111816] p-3">
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 px-1 text-xs text-[#718078]">
+              <div className="flex items-center gap-2">
+                <span>{inputMeta.wordCount} {inputMeta.wordCount === 1 ? "word" : "words"}</span>
+                <span>•</span>
+                <span>~{inputMeta.readTime} min read</span>
+              </div>
+              {rawInput && (
+                <button
+                  type="button"
+                  onClick={() => setRawInput("")}
+                  className="text-xs text-[#89968d] transition hover:text-red-400"
+                >
+                  Clear input
+                </button>
+              )}
+            </div>
+
+            <div className="mt-4 rounded-[1rem] border border-[#2d3934] bg-[#111816] p-3">
               <label
                 htmlFor="tone"
                 className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#aeb9b0]"
@@ -214,8 +353,9 @@ export default function WorkspacePage() {
             <button
               type="submit"
               disabled={isLoading || !rawInput.trim()}
-              className={`mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#c5f56b] to-[#7fe0a8] px-4 py-3 text-sm font-bold text-[#101514] shadow-[0_0_20px_rgba(197,245,107,0.2)] transition hover:brightness-110 ${isLoading || !rawInput.trim() ? "cursor-not-allowed opacity-50" : ""
-                }`}
+              className={`mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#c5f56b] to-[#7fe0a8] px-4 py-3 text-sm font-bold text-[#101514] shadow-[0_0_20px_rgba(197,245,107,0.2)] transition hover:brightness-110 ${
+                isLoading || !rawInput.trim() ? "cursor-not-allowed opacity-50" : ""
+              }`}
             >
               {isLoading ? (
                 <>
@@ -223,7 +363,10 @@ export default function WorkspacePage() {
                   Creating variants...
                 </>
               ) : (
-                "⚡ Generate content"
+                <>
+                  <Sparkles size={16} />
+                  <span>Generate content</span>
+                </>
               )}
             </button>
             <p className="mt-3 text-center text-xs text-[#718078]" aria-live="polite">
@@ -252,10 +395,11 @@ export default function WorkspacePage() {
                     key={tab.id}
                     type="button"
                     onClick={() => setActiveTab(tab.id)}
-                    className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition ${activeTab === tab.id
+                    className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
+                      activeTab === tab.id
                         ? "border-[#c5f56b] bg-[#c5f56b] text-[#101514]"
                         : "border-[#41504a] text-[#aeb9b0] hover:border-[#c5f56b] hover:text-[#c5f56b]"
-                      }`}
+                    }`}
                   >
                     {tab.label}
                   </button>
@@ -279,21 +423,43 @@ export default function WorkspacePage() {
                 <>
                   <div className="flex-1 overflow-y-auto rounded-[1rem] border border-[#34423b] bg-[#111816] p-5">
                     {activeTab === "twitter" ? (
-                      <div className="space-y-0">
+                      <div className="space-y-4">
                         {(Array.isArray(generatedData.twitterThread)
                           ? generatedData.twitterThread
                           : [generatedData.twitterThread]
                         ).map((tweet, i, arr) => (
-                          <div key={i} className="relative flex gap-4 pb-4">
+                          <div key={i} className="relative flex gap-4 pb-2">
                             {i < arr.length - 1 && (
-                              <span className="absolute left-4 top-9 h-[calc(100%-2rem)] w-px bg-[#34423b]" />
+                              <span className="absolute left-4 top-9 h-[calc(100%-1rem)] w-px bg-[#34423b]" />
                             )}
                             <span className="z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#c5f56b]/50 bg-[#15201d] text-xs font-bold text-[#c5f56b]">
                               {i + 1}
                             </span>
-                            <p className="flex-1 whitespace-pre-line rounded-xl border border-[#34423b] bg-[#15201d] p-4 text-sm leading-6 text-[#d3dbd2]">
-                              {tweet}
-                            </p>
+                            <div className="flex-1 rounded-xl border border-[#34423b] bg-[#15201d] p-4 text-sm text-[#d3dbd2]">
+                              <p className="whitespace-pre-line leading-6">{tweet}</p>
+                              <div className="mt-3 flex items-center justify-between border-t border-[#26322d] pt-2 text-xs text-[#718078]">
+                                <span className={tweet.length > 280 ? "text-amber-400 font-medium" : ""}>
+                                  {tweet.length} / 280 chars
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => handleCopyTweet(tweet, i)}
+                                  className="flex items-center gap-1.5 rounded-lg border border-[#34423b] bg-[#111816] px-2.5 py-1 text-xs text-[#aeb9b0] transition hover:border-[#c5f56b] hover:text-[#c5f56b]"
+                                >
+                                  {copiedIndex === i ? (
+                                    <>
+                                      <Check size={12} className="text-[#c5f56b]" />
+                                      <span className="text-[#c5f56b]">Copied</span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Copy size={12} />
+                                      <span>Copy</span>
+                                    </>
+                                  )}
+                                </button>
+                              </div>
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -304,27 +470,136 @@ export default function WorkspacePage() {
                     )}
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={handleCopy}
-                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-[#41504a] px-4 py-3 text-sm font-semibold transition hover:border-[#c5f56b] hover:text-[#c5f56b]"
-                  >
-                    {copied ? (
-                      <>
-                        <Check size={16} /> Copied!
-                      </>
-                    ) : (
-                      <>
-                        <Copy size={16} /> Copy output
-                      </>
-                    )}
-                  </button>
+                  <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+                    <button
+                      type="button"
+                      onClick={handleCopy}
+                      className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-[#41504a] bg-[#15201d] px-4 py-3 text-sm font-semibold transition hover:border-[#c5f56b] hover:text-[#c5f56b]"
+                    >
+                      {copied ? (
+                        <>
+                          <Check size={16} className="text-[#c5f56b]" /> Copied!
+                        </>
+                      ) : (
+                        <>
+                          <Copy size={16} /> Copy current tab
+                        </>
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleDownloadAll}
+                      className="flex items-center justify-center gap-2 rounded-xl border border-[#34423b] bg-[#111816] px-4 py-3 text-sm font-semibold text-[#d3dbd2] transition hover:border-[#c5f56b] hover:text-[#c5f56b]"
+                      title="Download all variants as a Markdown file"
+                    >
+                      {downloadSuccess ? (
+                        <>
+                          <Check size={16} className="text-[#c5f56b]" /> Exported .md
+                        </>
+                      ) : (
+                        <>
+                          <Download size={16} /> Export all (.md)
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </>
               )}
             </div>
           </div>
         </section>
       </div>
+
+      {/* History Slide-over Drawer */}
+      {isHistoryOpen && (
+        <div className="fixed inset-0 z-50 flex justify-end">
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
+            onClick={() => setIsHistoryOpen(false)}
+          />
+
+          <aside className="relative z-10 flex h-full w-full max-w-md flex-col border-l border-[#34423b] bg-[#111816] p-6 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#2d3934] pb-4">
+              <div className="flex items-center gap-2">
+                <History size={18} className="text-[#c5f56b]" />
+                <h2 className="text-base font-semibold text-[#f5f1e8]">Saved Creations</h2>
+                <span className="rounded-full bg-[#1e2a25] px-2 py-0.5 text-xs text-[#aeb9b0]">
+                  {history.length}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsHistoryOpen(false)}
+                className="rounded-lg p-1 text-[#718078] hover:bg-[#1a2520] hover:text-[#f5f1e8]"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto py-4">
+              {loadingHistory ? (
+                <div className="flex h-32 items-center justify-center text-xs text-[#718078]">
+                  <Loader2 size={16} className="mr-2 animate-spin text-[#c5f56b]" />
+                  Loading your history...
+                </div>
+              ) : history.length === 0 ? (
+                <div className="flex h-48 flex-col items-center justify-center text-center text-xs text-[#718078]">
+                  <FileText size={28} className="mb-2 text-[#46544c]" />
+                  <p>No saved creations yet.</p>
+                  <p className="mt-1 text-[#89968d]">Generate variants to see them saved here!</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {history.map((item) => (
+                    <div
+                      key={item._id}
+                      onClick={() => handleLoadItem(item)}
+                      className="group cursor-pointer rounded-xl border border-[#2d3934] bg-[#15201d] p-3.5 transition hover:border-[#c5f56b]/60 hover:bg-[#182622]"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="rounded-md border border-[#34423b] bg-[#101514] px-2 py-0.5 text-[10px] font-medium text-[#c5f56b]">
+                          {item.tone || "Professional"}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[11px] text-[#718078]">
+                            {item.createdAt
+                              ? new Date(item.createdAt).toLocaleDateString(undefined, {
+                                  month: "short",
+                                  day: "numeric",
+                                })
+                              : "Recent"}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={(e) => handleDeleteItem(e, item._id)}
+                            disabled={deletingId === item._id}
+                            className="rounded p-1 text-[#718078] transition hover:bg-red-500/10 hover:text-red-400"
+                            title="Delete creation"
+                          >
+                            {deletingId === item._id ? (
+                              <Loader2 size={13} className="animate-spin text-red-400" />
+                            ) : (
+                              <Trash2 size={13} />
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                      <p className="mt-2 line-clamp-2 text-xs leading-5 text-[#d3dbd2]">
+                        {item.rawInput}
+                      </p>
+                      <div className="mt-2 flex items-center justify-between text-[11px] text-[#718078] group-hover:text-[#c5f56b]">
+                        <span>Click to load into editor</span>
+                        <ArrowRight size={12} className="transition group-hover:translate-x-0.5" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </aside>
+        </div>
+      )}
     </main>
   );
 }
