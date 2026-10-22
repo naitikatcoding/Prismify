@@ -15,6 +15,8 @@ import {
   FileText,
   ArrowRight,
   Sparkles,
+  Search,
+  Lightbulb,
 } from "lucide-react";
 
 const TONES = ["Professional", "Conversational", "Bold"];
@@ -23,6 +25,41 @@ const TABS = [
   { id: "twitter", label: "🐦 Twitter Thread" },
   { id: "linkedin", label: "💼 LinkedIn Post" },
   { id: "newsletter", label: "📧 Newsletter" },
+];
+
+const CREATOR_TEMPLATES = [
+  {
+    id: "founder-insight",
+    title: "💡 Founder Insight",
+    desc: "Lessons & reflections",
+    tone: "Conversational",
+    prompt:
+      "Most early-stage creators think the secret to growth is finding a unique angle. In reality, it is showing up before you feel ready. We spent 3 months over-engineering our product before talking to a single customer. The moment we started sharing raw progress on Twitter and LinkedIn, everything shifted. People don't buy perfection; they buy progress.",
+  },
+  {
+    id: "podcast-notes",
+    title: "🎙️ Podcast / Video Note",
+    desc: "Key takeaways & breakdown",
+    tone: "Professional",
+    prompt:
+      "In our latest discussion with leading SaaS founders, three key patterns emerged for organic distribution in 2026:\n1. Short-form hooks that diagnose a specific pain point in under 3 seconds.\n2. Repurposing every long-form podcast or newsletter into 3 distinct platform formats.\n3. Building distribution pipelines that compound rather than relying on one-off viral spikes.",
+  },
+  {
+    id: "product-launch",
+    title: "🚀 Product Launch",
+    desc: "Announcement & value hook",
+    tone: "Bold",
+    prompt:
+      "Today we are publicly launching Prismify. We got tired of watching brilliant ideas die inside messy Notion drafts and voice memos. Prismify takes any brain dump or rough outline and instantly repurposes it into high-impact Twitter threads, LinkedIn thought leadership, and email newsletters in seconds. The future of content creation is speed.",
+  },
+  {
+    id: "case-study",
+    title: "🧵 Case Study",
+    desc: "Step-by-step breakdown",
+    tone: "Professional",
+    prompt:
+      "How one solo creator scaled from 0 to 50k followers in 6 months by repurposing a single weekly article into daily multi-platform content:\n- Monday: Drafted 1 core essay (800 words)\n- Tuesday: Turned the main thesis into a 5-tweet hook thread\n- Thursday: Extracted actionable framework for a LinkedIn carousel\n- Saturday: Sent executive summary in the weekly newsletter\nResult: 4x content output with zero additional creative burnout.",
+  },
 ];
 
 export default function WorkspacePage() {
@@ -43,6 +80,10 @@ export default function WorkspacePage() {
   const [deletingId, setDeletingId] = useState(null);
   const [saveStatus, setSaveStatus] = useState("idle");
   const [errorMessage, setErrorMessage] = useState("");
+
+  // History search and filter states
+  const [historySearch, setHistorySearch] = useState("");
+  const [historyToneFilter, setHistoryToneFilter] = useState("All");
 
   useEffect(() => {
     let isMounted = true;
@@ -97,6 +138,24 @@ export default function WorkspacePage() {
     };
   }, [rawInput]);
 
+  const filteredHistory = useMemo(() => {
+    return history.filter((item) => {
+      const matchesTone =
+        historyToneFilter === "All" || item.tone === historyToneFilter;
+      const query = historySearch.toLowerCase().trim();
+      if (!query) return matchesTone;
+
+      const inputMatch = item.rawInput?.toLowerCase().includes(query);
+      const twitterMatch = Array.isArray(item.outputs?.twitterThread)
+        ? item.outputs.twitterThread.some((t) => t.toLowerCase().includes(query))
+        : item.outputs?.twitterThread?.toLowerCase().includes(query);
+      const linkedinMatch = item.outputs?.linkedinPost?.toLowerCase().includes(query);
+      const newsletterMatch = item.outputs?.newsletter?.toLowerCase().includes(query);
+
+      return matchesTone && (inputMatch || twitterMatch || linkedinMatch || newsletterMatch);
+    });
+  }, [history, historySearch, historyToneFilter]);
+
   if (!authChecked) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[#101514] px-5 text-sm text-[#aeb9b0]">
@@ -105,6 +164,11 @@ export default function WorkspacePage() {
       </main>
     );
   }
+
+  const handleApplyTemplate = (template) => {
+    setRawInput(template.prompt);
+    setSelectedTone(template.tone);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -298,12 +362,31 @@ ${generatedData.newsletter || ""}
               </span>
             </div>
 
+            {/* Quick-start creator templates */}
+            <div className="mt-3 flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+              <span className="flex shrink-0 items-center gap-1 text-[11px] font-medium text-[#718078]">
+                <Lightbulb size={13} className="text-[#c5f56b]" />
+                Starters:
+              </span>
+              {CREATOR_TEMPLATES.map((tpl) => (
+                <button
+                  key={tpl.id}
+                  type="button"
+                  onClick={() => handleApplyTemplate(tpl)}
+                  className="shrink-0 rounded-lg border border-[#34423b] bg-[#111816] px-2.5 py-1 text-xs text-[#aeb9b0] transition hover:border-[#c5f56b] hover:text-[#c5f56b]"
+                  title={tpl.desc}
+                >
+                  {tpl.title}
+                </button>
+              ))}
+            </div>
+
             <textarea
               id="source"
               value={rawInput}
               onChange={(e) => setRawInput(e.target.value)}
-              className="mt-4 min-h-[16rem] w-full resize-none rounded-[1rem] border border-[#46544c] bg-[#111816] p-4 text-sm leading-6 text-[#d3dbd2] outline-none placeholder:text-[#718078] focus:border-[#c5f56b] focus:ring-2 focus:ring-[#c5f56b]/30"
-              placeholder="Paste a transcript, idea, article draft, or rough note..."
+              className="mt-3 min-h-[16rem] w-full resize-none rounded-[1rem] border border-[#46544c] bg-[#111816] p-4 text-sm leading-6 text-[#d3dbd2] outline-none placeholder:text-[#718078] focus:border-[#c5f56b] focus:ring-2 focus:ring-[#c5f56b]/30"
+              placeholder="Paste a transcript, idea, article draft, or pick a starter template above..."
             />
 
             <div className="mt-2 flex flex-wrap items-center justify-between gap-2 px-1 text-xs text-[#718078]">
@@ -415,7 +498,7 @@ ${generatedData.newsletter || ""}
                       Turn one idea into a full content system.
                     </p>
                     <p className="mt-2 text-sm text-[#89968d]">
-                      Paste your source, choose the tone, and generate multiple formats from the same message.
+                      Paste your source, choose the tone, or click any starter template to generate multiple formats instantly.
                     </p>
                   </div>
                 </div>
@@ -511,7 +594,7 @@ ${generatedData.newsletter || ""}
         </section>
       </div>
 
-      {/* History Slide-over Drawer */}
+      {/* History Slide-over Drawer with Search & Filter */}
       {isHistoryOpen && (
         <div className="fixed inset-0 z-50 flex justify-end">
           <div
@@ -537,6 +620,56 @@ ${generatedData.newsletter || ""}
               </button>
             </div>
 
+            {/* Search input and tone filter */}
+            {history.length > 0 && (
+              <div className="mt-4 flex flex-col gap-3 border-b border-[#2d3934] pb-4">
+                <div className="relative">
+                  <Search
+                    size={14}
+                    className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#718078]"
+                  />
+                  <input
+                    type="text"
+                    value={historySearch}
+                    onChange={(e) => setHistorySearch(e.target.value)}
+                    placeholder="Search past content..."
+                    className="w-full rounded-xl border border-[#34423b] bg-[#15201d] py-2 pl-9 pr-8 text-xs text-[#d3dbd2] placeholder:text-[#718078] outline-none focus:border-[#c5f56b]"
+                  />
+                  {historySearch && (
+                    <button
+                      type="button"
+                      onClick={() => setHistorySearch("")}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#718078] hover:text-[#d3dbd2]"
+                    >
+                      <X size={13} />
+                    </button>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none">
+                  {["All", ...TONES].map((tone) => (
+                    <button
+                      key={tone}
+                      type="button"
+                      onClick={() => setHistoryToneFilter(tone)}
+                      className={`rounded-lg px-2.5 py-1 text-[11px] font-medium transition ${
+                        historyToneFilter === tone
+                          ? "border border-[#c5f56b] bg-[#c5f56b]/10 text-[#c5f56b]"
+                          : "border border-[#2d3934] bg-[#15201d] text-[#89968d] hover:border-[#46544c] hover:text-[#d3dbd2]"
+                      }`}
+                    >
+                      {tone}
+                    </button>
+                  ))}
+                  {(historySearch || historyToneFilter !== "All") && (
+                    <span className="ml-auto text-[10px] text-[#718078]">
+                      {filteredHistory.length} found
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+
             <div className="flex-1 overflow-y-auto py-4">
               {loadingHistory ? (
                 <div className="flex h-32 items-center justify-center text-xs text-[#718078]">
@@ -549,9 +682,24 @@ ${generatedData.newsletter || ""}
                   <p>No saved creations yet.</p>
                   <p className="mt-1 text-[#89968d]">Generate variants to see them saved here!</p>
                 </div>
+              ) : filteredHistory.length === 0 ? (
+                <div className="flex h-48 flex-col items-center justify-center text-center text-xs text-[#718078]">
+                  <Search size={24} className="mb-2 text-[#46544c]" />
+                  <p>No matches found for your filter.</p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setHistorySearch("");
+                      setHistoryToneFilter("All");
+                    }}
+                    className="mt-2 text-xs text-[#c5f56b] underline"
+                  >
+                    Reset filters
+                  </button>
+                </div>
               ) : (
                 <div className="space-y-3">
-                  {history.map((item) => (
+                  {filteredHistory.map((item) => (
                     <div
                       key={item._id}
                       onClick={() => handleLoadItem(item)}
