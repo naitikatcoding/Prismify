@@ -1,19 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { getSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import logo from "../public/logo.svg";
 
 const Footer = () => {
   const pathname = usePathname();
-  const [session, setSession] = useState(null);
-
-  useEffect(() => {
-    getSession().then(setSession);
-  }, []);
+  const { data: session } = useSession();
 
   const studioHref = session ? "/workspace" : "/login";
   const studioLabel = session ? "Open Studio" : "Sign in to Studio";
@@ -106,6 +101,13 @@ const Footer = () => {
                 onClick={(e) => handleAnchorClick(e, "how-it-works")}
               >
                 How it works
+              </Link>
+              <Link
+                className="footer-link transition hover:text-[#c5f56b]"
+                href="/#about"
+                onClick={(e) => handleAnchorClick(e, "about")}
+              >
+                About
               </Link>
               <Link className="footer-link transition hover:text-[#c5f56b]" href={studioHref}>
                 {studioLabel}
