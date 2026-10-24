@@ -213,7 +213,7 @@ export default function HowItWorks() {
             {/* Preview Box */}
             <div className="mt-3.5 rounded-xl border border-[#27352d] bg-[#111816] p-4">
               <div className="flex items-center justify-between text-[11px] text-[#718078]">
-                <span>Perspective &amp; cadence</span>
+                <span>Perspective & cadence</span>
                 <span className="text-[#c5f56b]">{tones[activeTone].vibe}</span>
               </div>
               <p className="mt-3 text-xs leading-6 text-[#d3dbd2]">
@@ -304,7 +304,7 @@ export default function HowItWorks() {
           Have an unformed idea in your head right now?
         </p>
         <Link
-          href="/login"
+          href="/workspace"
           className="group inline-flex items-center gap-1.5 text-xs font-semibold text-[#c5f56b] transition hover:text-white"
         >
           <span>Try it in the workspace</span>

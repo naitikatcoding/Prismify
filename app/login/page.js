@@ -17,8 +17,8 @@ const LoginContent = () => {
               {session.user?.name?.charAt(0)?.toUpperCase() || "U"}
             </div>
           </div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#718078] mb-2">Signed in as</p>
-          <p className="font-semibold text-[#f5f1e8] mb-6 truncate">{session.user.email}</p>
+          <p className="font-semibold text-[#f5f1e8] truncate">{session.user?.name || "Creator"}</p>
+          <p className="text-xs text-[#718078] mb-6 truncate">{session.user?.email || ""}</p>
           <div className="flex flex-col gap-3">
             <Link href="/workspace" className="flex w-full items-center justify-center gap-2 rounded-full bg-[#c5f56b] px-6 py-3 text-sm font-bold text-[#101514] transition hover:bg-white">
               Go to Studio →
