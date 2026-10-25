@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import HowItWorks from "@/components/HowItWorks";
+import FAQ from "@/components/FAQ";
 
 const rawIdea =
   "Building in public taught me that consistency beats perfect timing. Here's what changed when I started sharing the process...";
@@ -397,6 +398,9 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* ── FAQ section ── */}
+        <FAQ />
       </main>
     </div>
   );

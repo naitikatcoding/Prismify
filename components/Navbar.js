@@ -121,6 +121,18 @@ const Navbar = () => {
             About
           </span>
         </Link>
+        <Link
+          href="/#faq"
+          onClick={(e) => handleAnchorClick(e, "faq")}
+          className="group relative h-5 overflow-hidden text-[#aeb9b0] transition hover:text-[#c5f56b]"
+        >
+          <span className="block whitespace-nowrap transition-transform duration-300 group-hover:-translate-y-full">
+            FAQ
+          </span>
+          <span className="absolute left-0 top-full block whitespace-nowrap transition-transform duration-300 group-hover:-translate-y-full">
+            FAQ
+          </span>
+        </Link>
 
         {isSignedIn ? (
           <div className="relative" ref={accountMenuRef}>
@@ -270,6 +282,16 @@ const Navbar = () => {
           }}
         >
           About
+        </Link>
+        <Link
+          className="rounded-xl px-4 py-3 text-[#aeb9b0] hover:bg-[#1d2a24] hover:text-[#c5f56b]"
+          href="/#faq"
+          onClick={(e) => {
+            setMobileMenuOpen(false);
+            handleAnchorClick(e, "faq");
+          }}
+        >
+          FAQ
         </Link>
         {isSignedIn ? (
           <button

@@ -109,6 +109,13 @@ const Footer = () => {
               >
                 About
               </Link>
+              <Link
+                className="footer-link transition hover:text-[#c5f56b]"
+                href="/#faq"
+                onClick={(e) => handleAnchorClick(e, "faq")}
+              >
+                FAQ
+              </Link>
               <Link className="footer-link transition hover:text-[#c5f56b]" href={studioHref}>
                 {studioLabel}
               </Link>
