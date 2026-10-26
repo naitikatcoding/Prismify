@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { getSession } from "next-auth/react";
 import {
@@ -17,6 +17,7 @@ import {
   Sparkles,
   Search,
   Lightbulb,
+  Keyboard,
 } from "lucide-react";
 
 const TONES = ["Professional", "Conversational", "Bold"];
@@ -76,6 +77,7 @@ export default function WorkspacePage() {
   const [savedCount, setSavedCount] = useState(0);
   const [history, setHistory] = useState([]);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
   const [saveStatus, setSaveStatus] = useState("idle");
@@ -156,22 +158,13 @@ export default function WorkspacePage() {
     });
   }, [history, historySearch, historyToneFilter]);
 
-  if (!authChecked) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-[#101514] px-5 text-sm text-[#aeb9b0]">
-        <Loader2 size={20} className="mr-2 animate-spin text-[#c5f56b]" />
-        Checking your session...
-      </main>
-    );
-  }
-
   const handleApplyTemplate = (template) => {
     setRawInput(template.prompt);
     setSelectedTone(template.tone);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
     if (isLoading || !rawInput.trim()) return;
     setIsLoading(true);
     setSaveStatus("saving");
@@ -209,9 +202,9 @@ export default function WorkspacePage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [isLoading, rawInput, selectedTone]);
 
-  const getActiveText = () => {
+  const getActiveText = useCallback(() => {
     if (!generatedData) return "";
     if (activeTab === "twitter") {
       return Array.isArray(generatedData.twitterThread)
@@ -220,17 +213,59 @@ export default function WorkspacePage() {
     }
     if (activeTab === "linkedin") return generatedData.linkedinPost || "";
     return generatedData.newsletter || "";
-  };
+  }, [generatedData, activeTab]);
 
-  const handleCopy = async () => {
+  const handleCopy = useCallback(async () => {
+    const text = getActiveText();
+    if (!text) return;
     try {
-      await navigator.clipboard.writeText(getActiveText());
+      await navigator.clipboard.writeText(text);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error("Copy failed:", err);
     }
-  };
+  }, [getActiveText]);
+
+  // Global keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Escape closes open modals or drawers
+      if (e.key === "Escape") {
+        setIsShortcutsOpen(false);
+        setIsHistoryOpen(false);
+        return;
+      }
+
+      // '?' toggles shortcuts dialog when not typing inside an input or textarea
+      if (
+        e.key === "?" &&
+        !["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)
+      ) {
+        e.preventDefault();
+        setIsShortcutsOpen((prev) => !prev);
+        return;
+      }
+
+      // Ctrl+Shift+C / Cmd+Shift+C to copy current active tab
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === "C" || e.key === "c")) {
+        e.preventDefault();
+        handleCopy();
+        return;
+      }
+
+      // Ctrl+Enter / Cmd+Enter anywhere to generate
+      if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+        if (!isLoading && rawInput.trim()) {
+          e.preventDefault();
+          handleSubmit(e);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isLoading, rawInput, handleCopy, handleSubmit]);
 
   const handleCopyTweet = async (tweet, index) => {
     try {
@@ -312,6 +347,15 @@ ${generatedData.newsletter || ""}
     }
   };
 
+  if (!authChecked) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[#101514] px-5 text-sm text-[#aeb9b0]">
+        <Loader2 size={20} className="mr-2 animate-spin text-[#c5f56b]" />
+        Checking your session...
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-[#101514] px-5 pb-8 pt-32 text-[#f5f1e8] sm:px-8 lg:px-12">
       <div className="mx-auto max-w-7xl">
@@ -333,7 +377,20 @@ ${generatedData.newsletter || ""}
             </h1>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <button
+              type="button"
+              onClick={() => setIsShortcutsOpen(true)}
+              className="flex items-center gap-1.5 rounded-xl border border-[#34423b] bg-[#15201d] px-3 py-2.5 text-xs font-semibold text-[#d3dbd2] transition hover:border-[#c5f56b] hover:text-[#c5f56b]"
+              title="Keyboard shortcuts"
+            >
+              <Keyboard size={15} />
+              <span className="hidden sm:inline">Shortcuts</span>
+              <kbd className="hidden md:inline-block rounded border border-[#46544c] bg-[#111816] px-1 text-[10px] text-[#718078]">
+                ?
+              </kbd>
+            </button>
+
             <button
               type="button"
               onClick={() => setIsHistoryOpen(true)}
@@ -385,8 +442,16 @@ ${generatedData.newsletter || ""}
               id="source"
               value={rawInput}
               onChange={(e) => setRawInput(e.target.value)}
+              onKeyDown={(e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+                  e.preventDefault();
+                  if (!isLoading && rawInput.trim()) {
+                    handleSubmit(e);
+                  }
+                }
+              }}
               className="mt-3 min-h-[16rem] w-full resize-none rounded-[1rem] border border-[#46544c] bg-[#111816] p-4 text-sm leading-6 text-[#d3dbd2] outline-none placeholder:text-[#718078] focus:border-[#c5f56b] focus:ring-2 focus:ring-[#c5f56b]/30"
-              placeholder="Paste a transcript, idea, article draft, or pick a starter template above..."
+              placeholder="Paste a transcript, idea, draft, or press Ctrl+Enter to generate..."
             />
 
             <div className="mt-2 flex flex-wrap items-center justify-between gap-2 px-1 text-xs text-[#718078]">
@@ -446,10 +511,13 @@ ${generatedData.newsletter || ""}
                   Creating variants...
                 </>
               ) : (
-                <>
+                <span className="flex items-center gap-2">
                   <Sparkles size={16} />
                   <span>Generate content</span>
-                </>
+                  <kbd className="hidden sm:inline-flex items-center rounded border border-[#101514]/20 bg-[#101514]/10 px-1.5 py-0.5 text-[10px] font-mono font-medium">
+                    Ctrl + ↵
+                  </kbd>
+                </span>
               )}
             </button>
             <p className="mt-3 text-center text-xs text-[#718078]" aria-live="polite">
@@ -593,6 +661,62 @@ ${generatedData.newsletter || ""}
           </div>
         </section>
       </div>
+
+      {/* Keyboard Shortcuts Dialog */}
+      {isShortcutsOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
+            onClick={() => setIsShortcutsOpen(false)}
+          />
+
+          <div className="relative z-10 w-full max-w-md rounded-2xl border border-[#34423b] bg-[#111816] p-6 shadow-2xl shadow-black/60">
+            <div className="flex items-center justify-between border-b border-[#2d3934] pb-4">
+              <div className="flex items-center gap-2.5">
+                <Keyboard size={18} className="text-[#c5f56b]" />
+                <h3 className="text-base font-semibold text-[#f5f1e8]">Keyboard Shortcuts</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsShortcutsOpen(false)}
+                className="rounded-lg p-1 text-[#718078] hover:bg-[#1a2520] hover:text-[#f5f1e8]"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="mt-5 space-y-2.5">
+              {[
+                { keys: ["Ctrl", "↵"], desc: "Generate content variants" },
+                { keys: ["Ctrl", "Shift", "C"], desc: "Copy current output tab" },
+                { keys: ["Esc"], desc: "Close drawer or dialog" },
+                { keys: ["?"], desc: "Toggle keyboard shortcuts guide" },
+              ].map((shortcut, i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between rounded-xl border border-[#26352d] bg-[#15201d] px-3.5 py-2.5"
+                >
+                  <span className="text-xs text-[#d3dbd2]">{shortcut.desc}</span>
+                  <div className="flex items-center gap-1">
+                    {shortcut.keys.map((k, ki) => (
+                      <kbd
+                        key={ki}
+                        className="rounded border border-[#3d4f45] bg-[#101514] px-2 py-0.5 text-[11px] font-mono font-semibold text-[#c5f56b]"
+                      >
+                        {k}
+                      </kbd>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <p className="mt-4 text-center text-[11px] text-[#718078]">
+              On macOS, use <kbd className="font-mono text-[#aeb9b0]">⌘ Command</kbd> in place of Ctrl.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* History Slide-over Drawer with Search & Filter */}
       {isHistoryOpen && (
