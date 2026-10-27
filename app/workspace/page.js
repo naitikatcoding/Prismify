@@ -140,6 +140,44 @@ export default function WorkspacePage() {
     };
   }, [rawInput]);
 
+  const variantMeta = useMemo(() => {
+    if (!generatedData) return null;
+
+    if (activeTab === "twitter") {
+      const thread = Array.isArray(generatedData.twitterThread)
+        ? generatedData.twitterThread
+        : [generatedData.twitterThread].filter(Boolean);
+      const totalChars = thread.reduce((sum, t) => sum + (t?.length || 0), 0);
+      const totalWords = thread.reduce(
+        (sum, t) => sum + (t ? t.trim().split(/\s+/).filter(Boolean).length : 0),
+        0
+      );
+      const readTime = Math.max(1, Math.ceil(totalWords / 180));
+      return {
+        countLabel: `${thread.length} ${thread.length === 1 ? "tweet" : "tweets"}`,
+        words: `${totalWords} words`,
+        chars: `${totalChars.toLocaleString()} total chars`,
+        readTime: `~${readTime} min read`,
+      };
+    }
+
+    const text =
+      (activeTab === "linkedin"
+        ? generatedData.linkedinPost
+        : generatedData.newsletter) || "";
+    const trimmed = text.trim();
+    const words = trimmed ? trimmed.split(/\s+/).filter(Boolean).length : 0;
+    const chars = trimmed.length;
+    const readTime = Math.max(1, Math.ceil(words / 180));
+
+    return {
+      countLabel: activeTab === "linkedin" ? "LinkedIn Post" : "Newsletter Issue",
+      words: `${words} words`,
+      chars: `${chars.toLocaleString()} chars`,
+      readTime: `~${readTime} min read`,
+    };
+  }, [generatedData, activeTab]);
+
   const filteredHistory = useMemo(() => {
     return history.filter((item) => {
       const matchesTone =
@@ -572,6 +610,25 @@ ${generatedData.newsletter || ""}
                 </div>
               ) : (
                 <>
+                  {/* Variant Output Stats Bar */}
+                  {variantMeta && (
+                    <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[#26352d] bg-[#111816] px-4 py-2 text-xs text-[#718078]">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-[#c5f56b]">
+                          {variantMeta.countLabel}
+                        </span>
+                        <span>•</span>
+                        <span>{variantMeta.words}</span>
+                        <span>•</span>
+                        <span>{variantMeta.chars}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 text-[11px] text-[#89968d]">
+                        <span>⏱️</span>
+                        <span>{variantMeta.readTime}</span>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="flex-1 overflow-y-auto rounded-[1rem] border border-[#34423b] bg-[#111816] p-5">
                     {activeTab === "twitter" ? (
                       <div className="space-y-4">
