@@ -33,14 +33,12 @@ const CATEGORIES = [
   { id: "UI/UX Suggestion", label: "UI / UX", icon: Palette, color: "#d4a8ff" },
   { id: "Appreciation", label: "Appreciation", icon: Heart, color: "#ff9f7b" },
 ];
-
 const QUICK_SUGGESTIONS = [
   "Love the UI aesthetic and speed!",
   "Would love export options for Notion & Markdown.",
   "Suggestion to improve generation quality:",
   "Found an issue while on mobile:",
 ];
-
 export default function ContactPage() {
   const [session, setSession] = useState(null);
   const [name, setName] = useState("");
@@ -295,11 +293,10 @@ export default function ContactPage() {
                             type="button"
                             onClick={() => setCategory(cat.id)}
                             style={isSelected ? { borderColor: `${cat.color}60`, boxShadow: `0 0 12px ${cat.color}15` } : {}}
-                            className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-medium transition-all duration-200 cursor-pointer ${
-                              isSelected
-                                ? "border bg-[#1c2a23] text-[#f5f1e8]"
-                                : "border border-[#1e2e28] bg-[#151f1c] text-[#718078] hover:border-[#2d3f36] hover:text-[#c5f1e8]"
-                            }`}
+                            className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-medium transition-all duration-200 cursor-pointer ${isSelected
+                              ? "border bg-[#1c2a23] text-[#f5f1e8]"
+                              : "border border-[#1e2e28] bg-[#151f1c] text-[#718078] hover:border-[#2d3f36] hover:text-[#c5f1e8]"
+                              }`}
                           >
                             <Icon className="h-3.5 w-3.5" style={isSelected ? { color: cat.color } : {}} />
                             {cat.label}
@@ -378,11 +375,10 @@ export default function ContactPage() {
                             aria-label={`Rate ${star} star`}
                           >
                             <Star
-                              className={`h-6 w-6 transition-all duration-150 ${
-                                active
-                                  ? "fill-[#c5f56b] text-[#c5f56b]"
-                                  : "text-[#2a3830]"
-                              }`}
+                              className={`h-6 w-6 transition-all duration-150 ${active
+                                ? "fill-[#c5f56b] text-[#c5f56b]"
+                                : "text-[#2a3830]"
+                                }`}
                               style={active ? { filter: "drop-shadow(0 0 6px #c5f56b80)" } : {}}
                             />
                           </button>
@@ -557,7 +553,7 @@ export default function ContactPage() {
                 About Prismify
               </h3>
               <p className="text-xs text-[#718078] leading-relaxed">
-                Continuously built and improved. Every bug report, idea, and kind word is read and
+                Continuously built and improve. Every bug report, idea, and kind word is read and
                 evaluated to craft a better content engine for everyone.
               </p>
             </div>
