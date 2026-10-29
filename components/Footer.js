@@ -1,18 +1,14 @@
 "use client";
-
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import logo from "../public/logo.svg";
-
 const Footer = () => {
   const pathname = usePathname();
   const { data: session } = useSession();
-
   const studioHref = session ? "/workspace" : "/login";
   const studioLabel = session ? "Open Studio" : "Sign in to Studio";
-
   const handleAnchorClick = (e, targetId) => {
     if (pathname === "/") {
       e.preventDefault();
@@ -25,7 +21,6 @@ const Footer = () => {
       }
     }
   };
-
   const handleHomeClick = (e) => {
     if (pathname === "/") {
       e.preventDefault();
@@ -35,7 +30,6 @@ const Footer = () => {
       }
     }
   };
-
   return (
     <footer className="border-t border-[#2d3934] bg-[#101514] text-[#f5f1e8]">
       <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-12 lg:py-20">
@@ -62,7 +56,6 @@ const Footer = () => {
               wherever your audience is reading.
             </p>
           </div>
-
           <Link
             href={studioHref}
             className="group inline-flex w-fit items-center gap-3 rounded-full bg-[#c5f56b] px-5 py-3.5 text-sm font-bold text-[#101514] transition hover:bg-white hover:scale-105"
@@ -82,7 +75,6 @@ const Footer = () => {
               page.
             </p>
           </div>
-
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#c5f56b]">
               Explore
