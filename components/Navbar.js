@@ -6,14 +6,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import logo from "../public/logo.svg";
-
 const Navbar = () => {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const [failedAvatarUrl, setFailedAvatarUrl] = useState(null);
   const accountMenuRef = useRef(null);
-
   const { data: session, status } = useSession();
   const isSignedIn = status === "authenticated" || Boolean(session);
   const studioHref = isSignedIn ? "/workspace" : "/login";
@@ -21,7 +19,6 @@ const Navbar = () => {
   const avatarInitial = avatarLabel.charAt(0).toUpperCase();
   const avatarUrl = session?.user?.image;
   const showAvatar = Boolean(avatarUrl && failedAvatarUrl !== avatarUrl);
-
   const handleAnchorClick = (e, targetId) => {
     if (pathname === "/") {
       e.preventDefault();
@@ -34,7 +31,6 @@ const Navbar = () => {
       }
     }
   };
-
   const handleHomeClick = (e) => {
     if (pathname === "/") {
       e.preventDefault();
@@ -44,7 +40,6 @@ const Navbar = () => {
       }
     }
   };
-
   // Close account menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -55,7 +50,6 @@ const Navbar = () => {
         setAccountMenuOpen(false);
       }
     };
-
     if (accountMenuOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     }
@@ -63,7 +57,6 @@ const Navbar = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [accountMenuOpen]);
-
   return (
     <nav className="relative z-50 mx-auto mt-4 flex w-[calc(100%-1.5rem)] max-w-5xl items-center rounded-full border border-[#34433b] bg-[#131c19]/90 px-4 py-2.5 text-sm text-[#f5f1e8] shadow-lg shadow-black/10 backdrop-blur-md sm:w-[calc(100%-2rem)] sm:px-5">
       <Link
@@ -220,11 +213,9 @@ const Navbar = () => {
           {mobileMenuOpen ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
         </svg>
       </button>
-
       <div
-        className={`absolute left-0 top-full mt-3 w-full flex-col gap-1 rounded-2xl border border-[#34433b] bg-[#131c19] p-3 text-base shadow-2xl shadow-black/30 ${
-          mobileMenuOpen ? "flex" : "hidden"
-        }`}
+        className={`absolute left-0 top-full mt-3 w-full flex-col gap-1 rounded-2xl border border-[#34433b] bg-[#131c19] p-3 text-base shadow-2xl shadow-black/30 ${mobileMenuOpen ? "flex" : "hidden"
+          }`}
       >
         {isSignedIn && (
           <div className="flex items-center gap-3 border-b border-[#34433b]/60 px-3 py-2.5 mb-1">
