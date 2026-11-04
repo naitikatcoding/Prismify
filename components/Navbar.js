@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -194,7 +193,6 @@ const Navbar = () => {
           </Link>
         )}
       </div>
-
       <button
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         className="ml-auto rounded-full border border-[#405047] p-2 text-[#aeb9b0] transition hover:border-[#c5f56b] hover:text-[#c5f56b] md:hidden"
