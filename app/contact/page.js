@@ -217,7 +217,6 @@ export default function ContactPage() {
                       ? `Your feedback was routed straight to ${developerEmail}. Thank you — I read every one.`
                       : "Your message has been received successfully."}
                   </p>
-
                   {submitResult?.needsActivation && (
                     <div className="mt-6 rounded-2xl border border-amber-500/30 bg-amber-500/8 p-4 text-left max-w-md w-full">
                       <div className="flex items-start gap-2.5">
@@ -305,7 +304,6 @@ export default function ContactPage() {
                       })}
                     </div>
                   </div>
-
                   {/* Name & Email */}
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
@@ -335,7 +333,6 @@ export default function ContactPage() {
                       />
                     </div>
                   </div>
-
                   {/* Subject */}
                   <div>
                     <label htmlFor="fb-subject" className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#516059] mb-2">
