@@ -215,7 +215,7 @@ export default function ContactPage() {
                   <p className="mt-2 max-w-sm text-sm text-[#8a9990] leading-relaxed">
                     {submitResult?.emailDelivered
                       ? `Your feedback was routed straight to ${developerEmail}. Thank you — I read every one.`
-                      : "Your message has been received successfully."}
+                      : "Your message has been received."}
                   </p>
                   {submitResult?.needsActivation && (
                     <div className="mt-6 rounded-2xl border border-amber-500/30 bg-amber-500/8 p-4 text-left max-w-md w-full">
